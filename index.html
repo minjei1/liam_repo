@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>절기 밥상</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@200;300;400;500&display=swap">
+<style>
+  :root {
+    --paper:       #F4F4EF;
+    --surface:     #FBFBF7;
+    --ink:         #1B1F26;
+    --ink-soft:    #4A505A;
+    --muted:       #7C8189;
+    --line:        #DDDCD3;
+    --line-strong: #C4C3B8;
+    --blue:        #2C4A7A;
+    --blue-soft:   #7E97BC;
+    --blue-wash:   rgba(44, 74, 122, .06);
+
+    --serif: "Gowun Batang", "Nanum Myeongjo", "Apple SD Gothic Neo", serif;
+    --sans:  "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --measure: 34rem;
+    --page:    46rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:       #15181C;
+      --surface:     #1B1F24;
+      --ink:         #E9E8E1;
+      --ink-soft:    #B7BAC0;
+      --muted:       #878C94;
+      --line:        #2A2F36;
+      --line-strong: #3B414A;
+      --blue:        #93B2E0;
+      --blue-soft:   #5A7398;
+      --blue-wash:   rgba(147, 178, 224, .08);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:       #15181C;
+    --surface:     #1B1F24;
+    --ink:         #E9E8E1;
+    --ink-soft:    #B7BAC0;
+    --muted:       #878C94;
+    --line:        #2A2F36;
+    --line-strong: #3B414A;
+    --blue:        #93B2E0;
+    --blue-soft:   #5A7398;
+    --blue-wash:   rgba(147, 178, 224, .08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: 0 1.75rem 5rem;
+  }
+
+  /* ── 머리말 ───────────────────────────── */
+
+  .masthead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 2.25rem 0 1rem;
+  }
+
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    letter-spacing: .22em;
+    margin: 0;
+    font-weight: 400;
+  }
+
+  .stamp {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .1em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--blue);
+    opacity: .5;
+    transform-origin: left center;
+    animation: draw 1.1s cubic-bezier(.2, .7, .2, 1) both;
+  }
+
+  @keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* ── 인사 ─────────────────────────────── */
+
+  .hero {
+    position: relative;
+    padding: 4.5rem 0 5rem;
+  }
+
+  .ring {
+    position: absolute;
+    top: 1.5rem;
+    right: -3rem;
+    width: 17rem;
+    height: 17rem;
+    border: 1px solid var(--blue);
+    border-radius: 50%;
+    opacity: .16;
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .16em;
+    color: var(--blue);
+    margin: 0 0 2rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.75rem, 9vw, 4.25rem);
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    margin: 0 0 1.75rem;
+    text-wrap: balance;
+  }
+
+  .lede {
+    position: relative;
+    font-family: var(--serif);
+    font-size: clamp(1.125rem, 3.2vw, 1.4375rem);
+    line-height: 1.85;
+    max-width: 26rem;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .lede + .lede-sub {
+    max-width: var(--measure);
+    margin: 1.75rem 0 0;
+    color: var(--ink-soft);
+    font-size: .9375rem;
+  }
+
+  /* ── 본문 구획 ────────────────────────── */
+
+  section { padding: 3.5rem 0 0; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.125rem;
+    letter-spacing: .06em;
+    margin: 0;
+  }
+
+  .section-note {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .08em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── 제철 재료 목록 ───────────────────── */
+
+  .seasonal {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .seasonal li {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    column-gap: 1.5rem;
+    row-gap: .25rem;
+    align-items: baseline;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .seasonal li:first-child { border-top: 1px solid var(--line); }
+
+  .ingredient {
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    letter-spacing: .02em;
+  }
+
+  .when {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .04em;
+    color: var(--blue);
+    font-variant-numeric: tabular-nums;
+    grid-column: 1;
+  }
+
+  .memo {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    font-size: .9375rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+
+  @media (max-width: 32rem) {
+    .seasonal li { grid-template-columns: 1fr; }
+    .when, .memo { grid-column: 1; }
+    .memo { grid-row: auto; margin-top: .375rem; }
+  }
+
+  /* ── 앞으로 만들 페이지 ───────────────── */
+
+  .plan {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .plan li {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    column-gap: 1rem;
+  }
+
+  .plan .no {
+    font-family: var(--mono);
+    font-size: .6875rem;
+    color: var(--blue-soft);
+    padding-top: .35rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .plan h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1rem;
+    margin: 0 0 .25rem;
+  }
+
+  .plan p {
+    margin: 0;
+    font-size: .9375rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .625rem;
+    letter-spacing: .1em;
+    color: var(--blue);
+    background: var(--blue-wash);
+    padding: .1rem .45rem;
+    margin-left: .5rem;
+    vertical-align: .12em;
+  }
+
+  /* ── 꼬리말 ───────────────────────────── */
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-strong);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    font-family: var(--mono);
+    font-size: .6875rem;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  a { color: var(--blue); text-underline-offset: .25em; }
+  a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+  @media (max-width: 40rem) {
+    .ring { width: 12rem; height: 12rem; right: -4rem; opacity: .1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rule { animation: none; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="wordmark">절기 밥상</p>
+    <p class="stamp">2026 · 09</p>
+  </header>
+  <div class="rule"></div>
+
+  <div class="hero">
+    <div class="ring" aria-hidden="true"></div>
+    <p class="eyebrow">처서 지나 백로 앞</p>
+    <h1>안녕하세요.</h1>
+    <p class="lede">이 사이트는 건강한 제철 식재료 요리를<br>먹고 싶은 사람을 위한 사이트입니다.</p>
+    <p class="lede-sub">절기를 따라, 지금 가장 맛이 오른 재료를 고르고 담백하게 차리는 법을 모읍니다. 손이 많이 가는 요리 대신 재료 본래의 맛을 살리는 쪽으로.</p>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>지금 제철</h2>
+      <p class="section-note">9월</p>
+    </div>
+
+    <ul class="seasonal">
+      <li>
+        <span class="ingredient">무화과</span>
+        <span class="when">8월 말 – 10월 초</span>
+        <span class="memo">껍질째 먹으면 식이섬유가 그대로 남습니다. 익힌 채소에 곁들이면 설탕 없이 단맛을 냅니다.</span>
+      </li>
+      <li>
+        <span class="ingredient">전어</span>
+        <span class="when">8월 – 10월</span>
+        <span class="memo">가을에 지방이 가장 많이 오릅니다. 기름을 더하지 않고 소금만 뿌려 굽는 편이 낫습니다.</span>
+      </li>
+      <li>
+        <span class="ingredient">밤</span>
+        <span class="when">9월 – 10월</span>
+        <span class="memo">삶아서 밥에 넣으면 흰쌀밥보다 천천히 소화됩니다. 껍질은 물에 30분 불리면 잘 벗겨집니다.</span>
+      </li>
+      <li>
+        <span class="ingredient">토란</span>
+        <span class="when">9월 – 10월</span>
+        <span class="memo">추석 무렵이 제일 좋습니다. 아린 맛은 쌀뜨물에 한 번 삶아 내면 빠집니다.</span>
+      </li>
+      <li>
+        <span class="ingredient">대하</span>
+        <span class="when">9월 – 11월</span>
+        <span class="memo">굵은 소금 위에 얹어 뚜껑을 덮고 찌듯 구우면 살이 마르지 않습니다.</span>
+      </li>
+      <li>
+        <span class="ingredient">배</span>
+        <span class="when">9월 – 11월</span>
+        <span class="memo">생으로도 좋지만 무와 함께 갈아 두면 고기 밑간에 씁니다. 환절기 기침에 달여 마시기도 합니다.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>앞으로 만들 페이지</h2>
+      <p class="section-note">계획</p>
+    </div>
+
+    <ul class="plan">
+      <li>
+        <span class="no">01</span>
+        <div>
+          <h3>절기 달력 <span class="tag">준비 중</span></h3>
+          <p>스물넷으로 나눈 절기마다 그때 나는 재료를 한 장에 펼쳐 봅니다. 지금이 몇 절기인지 자동으로 짚어 줍니다.</p>
+        </div>
+      </li>
+      <li>
+        <span class="no">02</span>
+        <div>
+          <h3>재료로 찾는 요리 <span class="tag">준비 중</span></h3>
+          <p>냉장고에 있는 재료를 고르면 그 재료가 제철일 때 어울리는 요리를 보여 줍니다.</p>
+        </div>
+      </li>
+      <li>
+        <span class="no">03</span>
+        <div>
+          <h3>오늘의 한 끼 <span class="tag">준비 중</span></h3>
+          <p>밥 하나, 국 하나, 나물 하나. 하루치 상차림을 통째로 제안합니다.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>절기 밥상</span>
+    <span>제철에 나는 것을, 제철에</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
