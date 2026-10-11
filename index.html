@@ -24,7 +24,7 @@
       <path class="jar-body" d="M65 8 L95 8 C99 8 101 14 102 22 C130 34 148 62 148 100 C148 144 118 178 80 184 C42 178 12 144 12 100 C12 62 30 34 58 22 C59 14 61 8 65 8 Z" />
       <path class="jar-seam" d="M18 99 C50 107 110 107 142 99" />
     </svg>
-    <p class="eyebrow">추분 지나 한로 앞</p>
+    <p class="eyebrow" id="solar-term">한로 지나 상강 앞</p>
     <h1>안녕하세요.</h1>
     <p class="lede">이 사이트는 건강한 제철 식재료 요리를<br>먹고 싶은 사람을 위한 사이트입니다.</p>
     <p class="lede-sub">절기를 따라, 지금 가장 맛이 오른 재료를 고르고 담백하게 차리는 법을 모읍니다. 손이 많이 가는 요리 대신 재료 본래의 맛을 살리는 쪽으로.</p>
@@ -38,7 +38,7 @@
 
     <a class="next" href="ingredients.html">
       <span class="next-title">지금 제철인 재료 보러 가기</span>
-      <span class="next-arrow" aria-hidden="true">→</span>
+      <span class="next-arrow"><span class="next-go">이동</span> <span aria-hidden="true">→</span></span>
     </a>
   </section>
 
@@ -52,22 +52,8 @@
       <li>
         <span class="no">01</span>
         <div>
-          <h3>절기 달력 <span class="tag">준비 중</span></h3>
-          <p>스물넷으로 나눈 절기마다 그때 나는 재료를 한 장에 펼쳐 봅니다. 지금이 몇 절기인지 자동으로 짚어 줍니다.</p>
-        </div>
-      </li>
-      <li>
-        <span class="no">02</span>
-        <div>
           <h3>재료로 찾는 요리 <span class="tag">준비 중</span></h3>
           <p>냉장고에 있는 재료를 고르면 그 재료가 제철일 때 어울리는 요리를 보여 줍니다.</p>
-        </div>
-      </li>
-      <li>
-        <span class="no">03</span>
-        <div>
-          <h3>오늘의 한 끼 <span class="tag">준비 중</span></h3>
-          <p>밥 하나, 국 하나, 나물 하나. 하루치 상차림을 통째로 제안합니다.</p>
         </div>
       </li>
     </ul>
@@ -84,10 +70,62 @@
 (function () {
   function pad2(n) { return n < 10 ? "0" + n : "" + n; }
 
+  // ── 24절기: 태양 황경이 15°의 배수가 되는 순간을 계산 (한국 표준시 기준) ──
+  var NAMES = ["입춘","우수","경칩","춘분","청명","곡우","입하","소만","망종","하지","소서","대서","입추","처서","백로","추분","한로","상강","입동","소설","대설","동지","소한","대한"];
+
+  function sunLongitude(ms) {
+    var jd = ms / 86400000 + 2440587.5;
+    var T = (jd - 2451545.0) / 36525;
+    var rad = Math.PI / 180;
+    var L0 = 280.46646 + 36000.76983 * T;
+    var M = (357.52911 + 35999.05029 * T) * rad;
+    var C = (1.914602 - 0.004817 * T) * Math.sin(M) + 0.019993 * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+    var lon = L0 + C - 0.00569 - 0.00478 * Math.sin((125.04 - 1934.136 * T) * rad);
+    return ((lon % 360) + 360) % 360;
+  }
+
+  function termTime(year, idx) {
+    var lambda = (idx * 15 + 315) % 360;
+    var signed = ((lambda + 75) % 360) - 75;
+    var ms = Date.UTC(year, 2, 20, 0, 0) + signed * 365.2422 / 360 * 86400000;
+    for (var i = 0; i < 8; i++) {
+      var diff = ((lambda - sunLongitude(ms) + 540) % 360) - 180;
+      ms += diff / 360 * 365.2422 * 86400000;
+    }
+    return ms;
+  }
+
+  function termsOfYear(year) {
+    var list = [];
+    for (var i = 0; i < 24; i++) list.push({ name: NAMES[i], ms: termTime(year, i) });
+    list.sort(function (a, b) { return a.ms - b.ms; });
+    return list;
+  }
+
+  var KST = 9 * 3600 * 1000;
+  function kstDate(ms) { return new Date(ms + KST); }
+  function sameDay(a, b) {
+    var x = kstDate(a), y = kstDate(b);
+    return x.getUTCFullYear() === y.getUTCFullYear() && x.getUTCMonth() === y.getUTCMonth() && x.getUTCDate() === y.getUTCDate();
+  }
+
+  function currentTerm(now, year) {
+    var all = termsOfYear(year - 1).concat(termsOfYear(year), termsOfYear(year + 1));
+    var cur = 0;
+    for (var i = 0; i < all.length; i++) { if (all[i].ms <= now) cur = i; }
+    return { cur: all[cur], next: all[cur + 1] };
+  }
+
   function update() {
+    var now = Date.now();
     var d = new Date();
-    document.getElementById("stamp").textContent = d.getFullYear() + " · " + pad2(d.getMonth() + 1);
+    var year = d.getFullYear();
+    document.getElementById("stamp").textContent = year + " · " + pad2(d.getMonth() + 1);
     document.getElementById("month-note").textContent = (d.getMonth() + 1) + "월";
+
+    var t = currentTerm(now, year);
+    document.getElementById("solar-term").textContent =
+      sameDay(t.cur.ms, now) ? "오늘은 " + t.cur.name : t.cur.name + " 지나 " + t.next.name + " 앞";
   }
 
   update();

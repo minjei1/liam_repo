@@ -25,10 +25,22 @@
       <path class="jar-seam" d="M18 99 C50 107 110 107 142 99" />
     </svg>
     <a class="back" href="index.html">← 처음으로</a>
-    <p class="eyebrow">추분 지나 한로 앞</p>
+    <p class="eyebrow">한로 지나 상강 앞</p>
     <h1>지금, 제철</h1>
     <p class="lede-sub" id="season-intro">9월에 가장 맛이 오른 6가지 재료입니다. 특별히 찾아다니지 않아도 가까운 마트에서 구할 수 있는 것들로만 골랐습니다.</p>
   </div>
+
+  <section class="today">
+    <div class="section-head">
+      <h2>오늘의 한 끼</h2>
+      <p class="section-note">밥 · 국 · 반찬</p>
+    </div>
+
+    <p class="today-note">이달 제철 재료로 짠 한 상입니다. 밥 하나, 국 하나, 반찬으로 맛과 영양이 겹치지 않게 맞췄고, 요리법까지 함께 적었습니다. 마음에 드는 상을 골라 보세요.</p>
+    <p class="nutri-note">오각형은 탄수화물·단백질·지방·비타민·무기질을 성인 하루 섭취 기준의 3분의 1(한 끼 기준량)과 견준 것입니다. 점선이 기준량 100%이고, 점수는 다섯 영양소가 기준량을 얼마나 채웠는지의 평균입니다. 재료로 어림한 추정치이니 참고용으로 봐 주세요.</p>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="meal" id="meal" hidden aria-live="polite"></div>
+  </section>
 
   <section>
     <div class="section-head">
@@ -36,22 +48,8 @@
       <p class="section-note" id="ingredient-count">6가지</p>
     </div>
 
+    <p class="fold-note">재료를 누르면 요리법이 펼쳐지고, 다시 누르면 접힙니다.</p>
     <ul class="seasonal" id="seasonal-list"></ul>
-  </section>
-
-  <section>
-    <div class="section-head">
-      <h2>어떤 걸 해 먹을까</h2>
-      <p class="section-note">25점 만점</p>
-    </div>
-
-    <div id="score-active">
-      <p class="score-note">위 재료로 만들 수 있는 요리 여섯 가지를 다섯 기준 — 제철 적합도, 영양 균형, 조리 간편함, 재료 구하기, 사람들의 선호 — 로 각각 1~5점씩 매겼습니다. 25점 만점에 가장 가까운 세 가지를, 재료 목록과 만드는 법까지 함께 보여 드립니다.</p>
-      <button class="score-btn" id="score-btn" type="button" aria-controls="results">점수로 요리 3가지 뽑기</button>
-      <ul class="results" id="results" hidden></ul>
-    </div>
-
-    <p class="score-fallback" id="score-fallback" hidden>지금은 가을(8~11월) 요리 여섯 가지만 채점해 뒀어요. 다른 계절 요리 추천은 곧 채워 넣을게요.</p>
   </section>
 
   <footer>
@@ -87,40 +85,54 @@
   };
 
   var ingredients = [
-    { name: "방어",   start: 11, end: 2,  period: "11월 – 2월",  cat: "fish",      memo: "겨울 방어는 기름기가 올라 회로도 구이로도 좋습니다. 등 푸른 생선이라 오메가3가 풍부합니다." },
-    { name: "굴",     start: 11, end: 2,  period: "11월 – 2월",  cat: "shellfish", memo: "레몬즙을 살짝 뿌려 날로 먹거나 전으로 부쳐도 좋습니다. 아연이 풍부해 겨울철 면역에 도움이 됩니다." },
-    { name: "시금치", start: 12, end: 2,  period: "12월 – 2월",  cat: "veg",       memo: "끓는 물에 살짝 데쳐 무치면 단맛이 살아납니다. 겨울 시금치는 당도가 높아 국거리로도 좋습니다." },
-    { name: "냉이",   start: 2,  end: 4,  period: "2월 – 4월",   cat: "veg",       memo: "뿌리째 캐서 된장국에 넣으면 봄 향이 진하게 우러납니다." },
-    { name: "달래",   start: 2,  end: 4,  period: "2월 – 4월",   cat: "veg",       memo: "잘게 썰어 간장에 무치면 봄 입맛을 돋우는 밑반찬이 됩니다." },
-    { name: "주꾸미", start: 3,  end: 4,  period: "3월 – 4월",   cat: "shellfish", memo: "끓는 물에 데쳐 초고추장에 찍어 먹거나 볶음으로 먹습니다. 봄철 산란 직전이라 살이 통통합니다." },
-    { name: "도다리", start: 3,  end: 4,  period: "3월 – 4월",   cat: "fish",      memo: "쑥과 함께 끓인 도다리쑥국이 봄철 대표 별미입니다." },
-    { name: "두릅",   start: 4,  end: 5,  period: "4월 – 5월",   cat: "veg",       memo: "끓는 물에 데쳐 초고추장을 곁들이면 쌉싸름한 봄 향을 그대로 즐길 수 있습니다." },
-    { name: "미나리", start: 3,  end: 5,  period: "3월 – 5월",   cat: "veg",       memo: "매운탕이나 전골에 마지막에 넣으면 향이 살아납니다." },
-    { name: "딸기",   start: 12, end: 4,  period: "12월 – 4월",  cat: "fruit",     memo: "꼭지를 딴 뒤 씻어야 단맛이 빠지지 않습니다." },
-    { name: "죽순",   start: 4,  end: 5,  period: "4월 – 5월",   cat: "veg",       memo: "쌀뜨물에 삶아 아린 맛을 뺀 뒤 나물이나 볶음으로 먹습니다." },
-    { name: "완두콩", start: 4,  end: 6,  period: "4월 – 6월",   cat: "veg",       memo: "깍지째 삶아 밥에 넣으면 은은한 단맛이 납니다." },
-    { name: "참외",   start: 5,  end: 7,  period: "5월 – 7월",   cat: "fruit",     memo: "냉장 보관하면 향이 죽으니 상온에 두었다가 먹기 직전에 차갑게 식힙니다." },
-    { name: "매실",   start: 5,  end: 6,  period: "5월 – 6월",   cat: "fruit",     memo: "설탕에 재워 청을 담그면 여름 내내 음료나 양념으로 씁니다." },
-    { name: "감자",   start: 5,  end: 7,  period: "5월 – 7월",   cat: "root",      memo: "햇감자는 껍질째 쪄 먹어도 부드럽습니다." },
-    { name: "장어",   start: 6,  end: 8,  period: "6월 – 8월",   cat: "fish",      memo: "숯불에 구워 기력 보충 음식으로 즐겨 먹습니다. 불포화지방산이 풍부합니다." },
-    { name: "열무",   start: 6,  end: 8,  period: "6월 – 8월",   cat: "veg",       memo: "소금에 살짝 절였다가 물김치를 담그면 여름 내내 시원하게 먹습니다." },
-    { name: "옥수수", start: 7,  end: 9,  period: "7월 – 9월",   cat: "grain",     memo: "찜통에 쪄서 그대로 먹거나 알만 긁어 밥에 넣습니다." },
-    { name: "복숭아", start: 7,  end: 9,  period: "7월 – 9월",   cat: "fruit",     memo: "차갑게 식혀 먹으면 여름 갈증 해소에 좋습니다." },
-    { name: "무화과", start: 8,  end: 10, period: "8월 말 – 10월 초", cat: "fruit", memo: "껍질째 먹으면 식이섬유가 그대로 남습니다. 익힌 채소에 곁들이면 설탕 없이 단맛을 냅니다." },
-    { name: "전어",   start: 8,  end: 10, period: "8월 – 10월",  cat: "fish",      memo: "가을에 지방이 가장 많이 오릅니다. 기름을 더하지 않고 소금만 뿌려 굽는 편이 낫습니다." },
-    { name: "밤",     start: 9,  end: 10, period: "9월 – 10월",  cat: "grain",     memo: "삶아서 밥에 넣으면 흰쌀밥보다 천천히 소화됩니다. 껍질은 물에 30분 불리면 잘 벗겨집니다." },
-    { name: "토란",   start: 9,  end: 10, period: "9월 – 10월",  cat: "root",      memo: "추석 무렵이 제일 좋습니다. 아린 맛은 쌀뜨물에 한 번 삶아 내면 빠집니다." },
-    { name: "대하",   start: 9,  end: 11, period: "9월 – 11월",  cat: "shellfish", memo: "굵은 소금 위에 얹어 뚜껑을 덮고 찌듯 구우면 살이 마르지 않습니다." },
-    { name: "배",     start: 9,  end: 11, period: "9월 – 11월",  cat: "fruit",     memo: "생으로도 좋지만 무와 함께 갈아 두면 고기 밑간에 씁니다. 환절기 기침에 달여 마시기도 합니다." },
-    { name: "감",     start: 10, end: 11, period: "10월 – 11월", cat: "fruit",     memo: "홍시가 되기 전 단단할 때 깎아 먹으면 아삭한 맛을 즐길 수 있습니다." },
-    { name: "고구마", start: 10, end: 12, period: "10월 – 12월", cat: "root",      memo: "에어프라이어나 오븐에 통째로 구우면 단맛이 더 진해집니다." },
-    { name: "배추",   start: 11, end: 12, period: "11월 – 12월", cat: "veg",       memo: "소금에 절였다가 헹구면 아삭한 식감이 살아 김장이나 겉절이에 좋습니다." },
-    { name: "귤",     start: 11, end: 1,  period: "11월 – 1월",  cat: "fruit",     memo: "껍질 안쪽 흰 부분에 식이섬유가 많아 함께 먹으면 좋습니다." }
+    { name: "방어", dish: "방어구이",   start: 11, end: 2,  period: "11월 – 2월",  cat: "fish",      memo: "겨울 방어는 기름기가 올라 회로도 구이로도 좋습니다. 등 푸른 생선이라 오메가3가 풍부합니다." },
+    { name: "굴", dish: "굴밥",     start: 11, end: 2,  period: "11월 – 2월",  cat: "shellfish", memo: "레몬즙을 살짝 뿌려 날로 먹거나 전으로 부쳐도 좋습니다. 아연이 풍부해 겨울철 면역에 도움이 됩니다." },
+    { name: "시금치", dish: "시금치나물", start: 12, end: 2,  period: "12월 – 2월",  cat: "veg",       memo: "끓는 물에 살짝 데쳐 무치면 단맛이 살아납니다. 겨울 시금치는 당도가 높아 국거리로도 좋습니다." },
+    { name: "냉이", dish: "냉이된장국",   start: 2,  end: 4,  period: "2월 – 4월",   cat: "veg",       memo: "뿌리째 캐서 된장국에 넣으면 봄 향이 진하게 우러납니다." },
+    { name: "달래", dish: "달래간장무침",   start: 2,  end: 4,  period: "2월 – 4월",   cat: "veg",       memo: "잘게 썰어 간장에 무치면 봄 입맛을 돋우는 밑반찬이 됩니다." },
+    { name: "주꾸미", dish: "주꾸미 데침", start: 3,  end: 4,  period: "3월 – 4월",   cat: "shellfish", memo: "끓는 물에 데쳐 초고추장에 찍어 먹거나 볶음으로 먹습니다. 봄철 산란 직전이라 살이 통통합니다." },
+    { name: "도다리", dish: "도다리쑥국", start: 3,  end: 4,  period: "3월 – 4월",   cat: "fish",      memo: "쑥과 함께 끓인 도다리쑥국이 봄철 대표 별미입니다." },
+    { name: "두릅", dish: "두릅 데침",   start: 4,  end: 5,  period: "4월 – 5월",   cat: "veg",       memo: "끓는 물에 데쳐 초고추장을 곁들이면 쌉싸름한 봄 향을 그대로 즐길 수 있습니다." },
+    { name: "미나리", dish: "미나리무침", start: 3,  end: 5,  period: "3월 – 5월",   cat: "veg",       memo: "매운탕이나 전골에 마지막에 넣으면 향이 살아납니다." },
+    { name: "딸기", dish: "딸기 요거트",   start: 12, end: 4,  period: "12월 – 4월",  cat: "fruit",     memo: "꼭지를 딴 뒤 씻어야 단맛이 빠지지 않습니다." },
+    { name: "죽순", dish: "죽순된장국",   start: 4,  end: 5,  period: "4월 – 5월",   cat: "veg",       memo: "쌀뜨물에 삶아 아린 맛을 뺀 뒤 나물이나 볶음으로 먹습니다." },
+    { name: "완두콩", dish: "완두콩밥", start: 4,  end: 6,  period: "4월 – 6월",   cat: "veg",       memo: "깍지째 삶아 밥에 넣으면 은은한 단맛이 납니다." },
+    { name: "참외", dish: "참외 화채",   start: 5,  end: 7,  period: "5월 – 7월",   cat: "fruit",     memo: "냉장 보관하면 향이 죽으니 상온에 두었다가 먹기 직전에 차갑게 식힙니다." },
+    { name: "매실", dish: "매실청",   start: 5,  end: 6,  period: "5월 – 6월",   cat: "fruit",     memo: "설탕에 재워 청을 담그면 여름 내내 음료나 양념으로 씁니다." },
+    { name: "감자", dish: "감자맑은국",   start: 5,  end: 7,  period: "5월 – 7월",   cat: "root",      memo: "햇감자는 껍질째 쪄 먹어도 부드럽습니다." },
+    { name: "장어", dish: "장어구이",   start: 6,  end: 8,  period: "6월 – 8월",   cat: "fish",      memo: "숯불에 구워 기력 보충 음식으로 즐겨 먹습니다. 불포화지방산이 풍부합니다." },
+    { name: "열무", dish: "열무물김치",   start: 6,  end: 8,  period: "6월 – 8월",   cat: "veg",       memo: "소금에 살짝 절였다가 물김치를 담그면 여름 내내 시원하게 먹습니다." },
+    { name: "옥수수", dish: "옥수수밥", start: 7,  end: 9,  period: "7월 – 9월",   cat: "grain",     memo: "찜통에 쪄서 그대로 먹거나 알만 긁어 밥에 넣습니다." },
+    { name: "복숭아", dish: "복숭아 화채", start: 7,  end: 9,  period: "7월 – 9월",   cat: "fruit",     memo: "차갑게 식혀 먹으면 여름 갈증 해소에 좋습니다." },
+    { name: "무화과", dish: "무화과 샐러드", start: 8,  end: 10, period: "8월 말 – 10월 초", cat: "fruit", memo: "껍질째 먹으면 식이섬유가 그대로 남습니다. 익힌 채소에 곁들이면 설탕 없이 단맛을 냅니다." },
+    { name: "전어", dish: "전어구이",   start: 8,  end: 10, period: "8월 – 10월",  cat: "fish",      memo: "가을에 지방이 가장 많이 오릅니다. 기름을 더하지 않고 소금만 뿌려 굽는 편이 낫습니다." },
+    { name: "밤", dish: "밤밥",     start: 9,  end: 10, period: "9월 – 10월",  cat: "grain",     memo: "삶아서 밥에 넣으면 흰쌀밥보다 천천히 소화됩니다. 껍질은 물에 30분 불리면 잘 벗겨집니다." },
+    { name: "토란", dish: "토란국",   start: 9,  end: 10, period: "9월 – 10월",  cat: "root",      memo: "추석 무렵이 제일 좋습니다. 아린 맛은 쌀뜨물에 한 번 삶아 내면 빠집니다." },
+    { name: "대하", dish: "대하구이",   start: 9,  end: 11, period: "9월 – 11월",  cat: "shellfish", memo: "굵은 소금 위에 얹어 뚜껑을 덮고 찌듯 구우면 살이 마르지 않습니다." },
+    { name: "배", dish: "배숙",     start: 9,  end: 11, period: "9월 – 11월",  cat: "fruit",     memo: "생으로도 좋지만 무와 함께 갈아 두면 고기 밑간에 씁니다. 환절기 기침에 달여 마시기도 합니다." },
+    { name: "감", dish: "감 호두 접시",     start: 10, end: 11, period: "10월 – 11월", cat: "fruit",     memo: "홍시가 되기 전 단단할 때 깎아 먹으면 아삭한 맛을 즐길 수 있습니다." },
+    { name: "고구마", dish: "고구마밥", start: 10, end: 12, period: "10월 – 12월", cat: "root",      memo: "에어프라이어나 오븐에 통째로 구우면 단맛이 더 진해집니다." },
+    { name: "배추", dish: "배추겉절이",   start: 11, end: 12, period: "11월 – 12월", cat: "veg",       memo: "소금에 절였다가 헹구면 아삭한 식감이 살아 김장이나 겉절이에 좋습니다." },
+    { name: "귤", dish: "귤 꿀차",     start: 11, end: 1,  period: "11월 – 1월",  cat: "fruit",     memo: "껍질 안쪽 흰 부분에 식이섬유가 많아 함께 먹으면 좋습니다." }
   ];
 
   function isInSeason(item, month) {
     if (item.start <= item.end) return month >= item.start && month <= item.end;
     return month >= item.start || month <= item.end;
+  }
+
+  function recipeMarkup(name, compact) {
+    var r = RECIPES[name];
+    if (!r) return "";
+    return (
+      '<div class="recipe">' +
+        (compact ? "" : '<p class="recipe-title">' + name + '</p>' + '<p class="recipe-desc">' + r.d + '</p>') +
+        '<p class="recipe-label">재료</p>' +
+        '<ul class="recipe-ingredients">' + r.i.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul>' +
+        '<p class="recipe-label">만드는 법</p>' +
+        '<ol class="recipe-steps">' + r.s.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ol>' +
+      '</div>'
+    );
   }
 
   function renderSeasonal() {
@@ -133,184 +145,336 @@
 
     document.getElementById("seasonal-list").innerHTML = active.map(function (item) {
       return (
-        '<li>' +
-          '<span class="ingredient-icon">' + (ICONS[item.cat] || ICONS.veg) + "</span>" +
-          '<span class="ingredient">' + item.name + "</span>" +
-          '<span class="when">' + item.period + "</span>" +
-          '<span class="memo">' + item.memo + "</span>" +
-        "</li>"
+        '<li><details class="ing">' +
+          '<summary>' +
+            '<span class="ingredient-icon">' + (ICONS[item.cat] || ICONS.veg) + "</span>" +
+            '<span class="ingredient">' + item.name + "</span>" +
+            '<span class="when">' + item.period + "</span>" +
+            '<span class="memo">' + item.memo + "</span>" +
+            '<span class="toggle" aria-hidden="true"></span>' +
+          "</summary>" +
+          recipeMarkup(item.dish) +
+        "</details></li>"
       );
     }).join("");
 
     return month;
   }
 
-  /* ── 요리 추천 (점수 매기기) — 지금은 가을 여섯 가지만 준비됨 ── */
+  /* ── 요리법 (2인분 기준) ─────────────────── */
 
-  var MAX_SCORE = 25;
-  var FALL_MONTHS = [8, 9, 10, 11];
+  var RECIPES = {
+    "흰쌀밥": { d: "윤기 도는 갓 지은 밥",
+      i: ["쌀 2컵", "물 2컵"],
+      s: ["쌀을 맑은 물이 나올 때까지 3~4번 씻는다.", "체에 밭쳐 물기를 빼고 30분 불린다.", "밥솥에 쌀과 같은 양의 물을 붓고 취사한다.", "다 되면 10분 뜸을 들인 뒤 주걱으로 위아래를 고루 섞는다."] },
+    "냉이된장국": { d: "뿌리째 넣어 봄 향이 진하게 우러난 국",
+      i: ["냉이 100g", "쌀뜨물 3컵", "된장 1.5큰술", "두부 1/4모", "다진 마늘 1/2작은술", "대파 약간"],
+      s: ["냉이는 뿌리의 흙을 칼등으로 긁어내고 여러 번 씻는다.", "쌀뜨물에 된장을 풀어 끓인다.", "끓으면 냉이를 뿌리 쪽부터 넣고 3~4분 끓인다.", "깍둑 썬 두부와 다진 마늘, 대파를 넣고 한소끔 더 끓인다."] },
+    "달래간장무침": { d: "잘게 썰어 간장에 무친 봄 밑반찬",
+      i: ["달래 한 줌", "간장 1큰술", "고춧가루 1/2작은술", "참기름 1작은술", "통깨 약간"],
+      s: ["달래는 뿌리 쪽 껍질을 벗기고 씻어 물기를 턴다.", "3~4cm 길이로 썬다.", "간장, 고춧가루, 참기름, 통깨를 섞어 양념장을 만든다.", "먹기 직전에 양념장에 가볍게 버무린다."] },
+    "도다리쑥국": { d: "쑥과 함께 끓인 봄철 대표 별미",
+      i: ["도다리 1마리", "쑥 한 줌", "쌀뜨물 3컵", "된장 1큰술", "국간장 1작은술", "다진 마늘 약간"],
+      s: ["도다리는 비늘과 내장을 제거하고 토막 내 씻는다.", "쌀뜨물에 된장을 풀어 끓인다.", "끓으면 도다리를 넣고 5~6분 끓인다.", "쑥과 다진 마늘을 넣고 국간장으로 간한 뒤 1분만 더 끓여 향을 살린다."] },
+    "주꾸미 데침": { d: "살짝 데쳐 초고추장에 찍어 먹는 봄 해산물",
+      i: ["주꾸미 4마리", "굵은 소금·밀가루 약간", "초고추장 3큰술"],
+      s: ["주꾸미 머리를 뒤집어 내장을 떼고, 밀가루와 소금으로 주물러 씻는다.", "끓는 물에 넣고 30초~1분만 데친다. 오래 삶으면 질겨진다.", "건져서 찬물에 헹궈 물기를 뺀다.", "먹기 좋게 썰어 초고추장과 함께 낸다."] },
+    "완두콩밥": { d: "깍지째 삶은 완두콩을 넣어 은은히 단 밥",
+      i: ["쌀 2컵", "깐 완두콩 1컵", "물 2컵", "소금 한 꼬집"],
+      s: ["쌀을 씻어 30분 불린다.", "완두콩은 깍지를 까서 씻는다.", "밥솥에 쌀과 완두콩, 물, 소금을 넣는다.", "취사한 뒤 콩이 으깨지지 않게 살살 섞는다."] },
+    "죽순된장국": { d: "아린 맛을 뺀 죽순을 넣은 구수한 국",
+      i: ["삶은 죽순 100g", "쌀뜨물 3컵", "된장 1.5큰술", "다진 마늘 1/2작은술", "대파 약간"],
+      s: ["생죽순은 쌀뜨물에 30~40분 삶아 아린 맛을 빼고 얇게 썬다.", "쌀뜨물에 된장을 풀어 끓인다.", "죽순을 넣고 5분 끓인다.", "다진 마늘과 대파를 넣고 한소끔 더 끓인다."] },
+    "두릅 데침": { d: "쌉싸름한 봄 향을 그대로 즐기는 나물",
+      i: ["두릅 200g", "소금 약간", "초고추장 3큰술"],
+      s: ["두릅 밑동의 딱딱한 부분을 잘라내고 겉껍질을 다듬는다.", "소금을 넣은 끓는 물에 1~2분 데친다.", "찬물에 헹궈 물기를 짠다.", "큰 것은 반으로 갈라 초고추장을 곁들인다."] },
+    "감자맑은국": { d: "햇감자를 넣어 투명하게 끓인 국",
+      i: ["감자 1개", "물 3컵", "국간장 1작은술", "다진 마늘 약간", "대파 약간"],
+      s: ["감자는 껍질을 벗겨 반달 모양으로 얇게 썰고 물에 담가 둔다.", "물을 끓이다가 감자를 넣고 투명해질 때까지 7~8분 끓인다.", "국간장과 다진 마늘로 간한다.", "대파를 넣고 불을 끈다."] },
+    "열무물김치": { d: "소금에 절여 담근 시원한 여름 물김치",
+      i: ["열무 1단(500g)", "굵은 소금 3큰술", "밀가루 1큰술", "물 6컵", "마늘 3쪽", "풋고추 2개", "소금 1큰술"],
+      s: ["열무는 다듬어 5cm로 썰고 굵은 소금을 뿌려 30분 절인다.", "물 2컵에 밀가루를 풀어 끓여 풀을 쑤고 식힌다.", "절인 열무를 헹궈 물기를 뺀다.", "용기에 열무, 편 썬 마늘, 풋고추를 담고 풀과 남은 물을 붓고 소금으로 간한다.", "상온에 하루 두어 익힌 뒤 냉장 보관한다."] },
+    "옥수수밥": { d: "알만 긁어 넣어 은은히 단 밥",
+      i: ["쌀 2컵", "옥수수 1개", "물 2컵", "소금 한 꼬집"],
+      s: ["쌀을 씻어 30분 불린다.", "옥수수는 칼로 알을 떼어낸다.", "밥솥에 쌀과 옥수수 알, 물, 소금을 넣는다. 속대를 함께 넣으면 단맛이 더 우러난다.", "취사한 뒤 속대를 빼고 고루 섞는다."] },
+    "오이냉국": { d: "차게 낸 새콤한 여름 국",
+      i: ["오이 1개", "찬물 2컵", "식초 2큰술", "국간장 1큰술", "설탕 1작은술", "통깨·소금 약간", "얼음"],
+      s: ["오이를 가늘게 채 썰어 소금을 살짝 뿌려 두었다가 물기를 짠다.", "찬물에 국간장, 식초, 설탕을 풀어 간을 맞춘다.", "오이를 넣고 얼음을 띄운다.", "통깨를 뿌려 낸다."] },
+    "장어구이": { d: "구워서 달큰한 소스를 바른 기력 보충 반찬",
+      i: ["손질한 장어 400g", "소금·후추 약간", "간장 2큰술", "물엿 1큰술", "생강즙 1작은술"],
+      s: ["장어의 물기를 닦고 소금, 후추로 밑간한다.", "달군 팬이나 석쇠에 올려 중불에서 앞뒤로 5분씩 굽는다.", "간장, 물엿, 생강즙을 작은 냄비에 끓여 소스를 만든다.", "구운 장어에 소스를 발라 약불에서 1분 더 굽는다."] },
+    "전어구이": { d: "가시째 구워 소금만 곁들이는 가을 대표 별미",
+      i: ["손질된 전어 4마리", "굵은 소금 약간", "무 약간(곁들임)"],
+      s: ["전어는 비늘을 긁어내고 배를 갈라 내장을 제거한 뒤 흐르는 물에 헹군다.", "속까지 잘 익도록 몸통에 어슷하게 칼집을 3~4번 넣는다.", "키친타월로 물기를 완전히 제거한다.", "달군 석쇠나 팬에 전어를 올려 앞뒤로 노릇하게 굽는다.", "다 구워지면 굵은 소금을 살짝 뿌리고 무채와 함께 낸다."] },
+    "밤밥": { d: "삶은 밤을 얹어 지은 밥, 반찬 없이도 든든함",
+      i: ["쌀 2컵", "밤 15알", "밥물 2컵", "소금 약간"],
+      s: ["쌀은 씻어 30분 정도 물에 불린다.", "밤은 껍질째 물에 30분 담가 두었다가 겉껍질과 속껍질을 벗긴다.", "불린 쌀과 밤을 밥솥에 담고 밥물을 맞춘다.", "소금을 아주 약간 넣고 골고루 섞는다.", "평소대로 취사한 뒤, 다 되면 밥과 밤을 고루 섞어 그릇에 담는다."] },
+    "토란국": { d: "쌀뜨물에 삶아 아린 맛을 뺀 토란으로 끓인 국",
+      i: ["토란 300g", "쌀뜨물(또는 물) 1L", "다진 소고기 100g", "국간장 1큰술", "다진 마늘 1작은술", "대파 약간", "참기름 약간"],
+      s: ["토란은 껍질을 벗긴 뒤 쌀뜨물에 담가 아린 맛을 뺀다.", "냄비에 참기름을 두르고 다진 소고기를 볶는다.", "고기가 익으면 토란을 넣고 함께 볶는다.", "물을 붓고 끓어오르면 중불로 줄여 토란이 무를 때까지 끓인다.", "국간장과 다진 마늘로 간을 하고, 대파를 넣어 한소끔 더 끓인다."] },
+    "고구마밥": { d: "깍둑 썬 고구마를 넣어 단맛이 진한 밥",
+      i: ["쌀 2컵", "고구마 1개(중간 크기)", "물 2컵", "소금 한 꼬집"],
+      s: ["쌀을 씻어 30분 불린다.", "고구마는 껍질을 깨끗이 씻어 2cm 크기로 깍둑 썬다.", "밥솥에 쌀을 안치고 고구마를 올린 뒤 물과 소금을 넣는다.", "취사한 뒤 주걱으로 고구마를 살짝 으깨듯 섞는다."] },
+    "소고기뭇국": { d: "무가 달아지는 계절의 맑은 국",
+      i: ["소고기(국거리) 150g", "무 200g", "물 5컵", "국간장 1.5큰술", "다진 마늘 1작은술", "참기름 1작은술", "대파 약간"],
+      s: ["소고기는 찬물에 15분 담가 핏물을 뺀다.", "냄비에 참기름을 두르고 소고기를 볶는다.", "나박 썬 무를 넣고 함께 볶다가 물을 붓는다.", "끓어오르면 거품을 걷고 중불에서 30분 끓인다.", "국간장과 다진 마늘로 간하고 대파를 넣는다."] },
+    "대하구이": { d: "굵은 소금 위에 얹어 뚜껑 덮고 찌듯 굽는 통새우",
+      i: ["대하(왕새우) 8마리", "굵은 소금 2컵"],
+      s: ["대하는 수염과 뿔을 다듬고 등쪽 내장을 이쑤시개로 빼낸다.", "팬이나 냄비 바닥에 굵은 소금을 깔고 달군다.", "소금이 달궈지면 대하를 가지런히 올린다.", "뚜껑을 덮고 중약불에서 5~7분간 찌듯이 굽는다.", "껍질이 붉게 익고 속살이 탱글해지면 불을 끄고 뜨거울 때 낸다."] },
+    "배추된장국": { d: "배추가 달큰하게 우러난 구수한 국",
+      i: ["배추 잎 5장(200g)", "쌀뜨물 4컵", "된장 1.5큰술", "다진 마늘 1/2작은술", "대파 약간"],
+      s: ["배추는 한입 크기로 썬다.", "쌀뜨물에 된장을 풀어 끓인다.", "배추를 넣고 10~15분 푹 끓인다.", "다진 마늘과 대파를 넣고 한소끔 더 끓인다."] },
+    "방어구이": { d: "기름이 오른 겨울 방어를 소금만으로 구운 것",
+      i: ["방어 2토막", "소금 약간", "식용유 약간", "간 무(곁들임)"],
+      s: ["방어에 소금을 살짝 뿌려 10분 둔다.", "나온 물기를 키친타월로 닦는다.", "달군 팬에 기름을 아주 얇게 두르고 중불에서 앞뒤로 4~5분씩 굽는다.", "간 무를 곁들여 낸다."] },
+    "굴밥": { d: "굴을 올려 지은 밥, 양념간장에 비벼 먹는다",
+      i: ["쌀 2컵", "굴 150g", "물 1.8컵", "양념장: 간장 2큰술, 다진 파·고춧가루·참기름·깨 약간"],
+      s: ["쌀을 씻어 30분 불린다.", "굴은 연한 소금물에서 살살 흔들어 씻고 물기를 뺀다.", "밥솥에 쌀과 물을 넣고 취사한다.", "밥이 다 되면 굴을 얹고 뚜껑을 덮어 5~10분 뜸 들인다.", "양념장을 만들어 곁들이고 비벼 먹는다."] },
+    "시금치된장국": { d: "단맛이 오른 겨울 시금치로 끓인 국",
+      i: ["시금치 150g", "쌀뜨물 4컵", "된장 1.5큰술", "다진 마늘 1/2작은술", "대파 약간"],
+      s: ["시금치는 뿌리를 다듬어 씻고 5cm 길이로 자른다.", "쌀뜨물에 된장을 풀어 끓인다.", "끓으면 시금치를 넣고 3분 끓인다.", "다진 마늘과 대파를 넣고 불을 끈다."] },
+    "시금치나물": { d: "살짝 데쳐 무친 단맛 나는 나물",
+      i: ["시금치 1단", "소금 약간", "국간장 1작은술", "다진 마늘 1/2작은술", "참기름 1작은술", "통깨 약간"],
+      s: ["끓는 소금물에 시금치를 30초~1분만 데친다.", "찬물에 헹궈 물기를 꼭 짠다.", "먹기 좋게 썰어 국간장, 다진 마늘, 참기름을 넣는다.", "조물조물 무치고 통깨를 뿌린다."] },
+    "미나리무침": { d: "향이 살아 있는 새콤한 초무침",
+      i: ["미나리 한 줌", "고추장 1큰술", "식초 1큰술", "설탕 1/2큰술", "다진 마늘 1/2작은술", "참기름 1작은술"],
+      s: ["미나리는 잎을 다듬고 깨끗이 씻는다.", "끓는 물에 10초만 데쳐 찬물에 헹구고 물기를 짠다.", "4cm 길이로 썬다.", "고추장, 식초, 설탕, 마늘, 참기름을 섞어 양념장을 만들고 무친다."] },
+    "딸기 요거트": { d: "꼭지째 씻어 단맛을 지킨 간단한 디저트",
+      i: ["딸기 10알", "플레인 요거트 1컵", "꿀 1작은술"],
+      s: ["딸기는 꼭지를 단 채로 흐르는 물에 씻는다.", "꼭지를 떼고 반으로 썬다.", "그릇에 요거트를 담는다.", "딸기를 올리고 꿀을 두른다."] },
+    "참외 화채": { d: "차갑게 식혀 먹는 여름 화채",
+      i: ["참외 1개", "우유 1컵", "꿀 1큰술", "얼음"],
+      s: ["상온에 둔 참외를 씻어 껍질을 깎고 씨를 뺀다.", "한입 크기로 썬다.", "우유에 꿀을 풀어 차게 둔다.", "그릇에 참외를 담고 우유와 얼음을 붓는다."] },
+    "매실청": { d: "여름 내내 음료와 양념으로 쓰는 청",
+      i: ["청매실 1kg", "설탕 1kg", "유리병"],
+      s: ["매실을 씻어 물기를 완전히 말리고 꼭지를 제거한다.", "소독한 병에 매실과 설탕을 켜켜이 담는다.", "맨 위를 설탕으로 덮고 뚜껑을 닫아 서늘한 곳에 둔다.", "설탕이 녹도록 가끔 흔들어 주고, 100일쯤 뒤 매실을 건져 청만 보관한다."] },
+    "복숭아 화채": { d: "여름 갈증을 풀어 주는 차가운 화채",
+      i: ["복숭아 2개", "꿀 1큰술", "찬물(또는 탄산수) 2컵", "얼음"],
+      s: ["복숭아는 껍질을 벗기고 씨를 발라 한입 크기로 썬다.", "찬물에 꿀을 풀어 둔다.", "그릇에 복숭아를 담고 꿀물을 붓는다.", "얼음을 띄워 차게 먹는다."] },
+    "무화과 샐러드": { d: "무화과와 잎채소를 올리브유로 가볍게 버무린 것",
+      i: ["무화과 4개", "루꼴라(또는 잎채소) 한 줌", "생모짜렐라 50g", "올리브유 1큰술", "발사믹 식초 1작은술", "소금 약간", "호두 약간(선택)"],
+      s: ["무화과는 흐르는 물에 씻어 꼭지를 떼고 세로로 4등분한다.", "잎채소는 찬물에 담가 아삭하게 살린 뒤 물기를 털어낸다.", "접시에 잎채소를 깔고 무화과와 모짜렐라를 보기 좋게 얹는다.", "올리브유, 발사믹 식초, 소금을 섞어 드레싱을 만든다.", "드레싱을 골고루 뿌리고 호두를 부수어 올려 마무리한다."] },
+    "배숙": { d: "배와 생강, 통후추를 넣고 끓인 달콤한 차",
+      i: ["배 1개", "생강 1쪽", "통후추 5알", "꿀(또는 설탕) 2큰술", "물 500ml"],
+      s: ["배는 껍질을 벗기고 6~8등분한 뒤 씨 부분을 제거한다.", "생강은 얇게 편으로 썬다.", "냄비에 물과 생강, 통후추를 넣고 끓인다.", "끓기 시작하면 배를 넣고 반투명해질 때까지 중약불로 익힌다.", "불을 끄고 꿀을 넣어 단맛을 맞춘 뒤 따뜻하거나 차게 낸다."] },
+    "감 호두 접시": { d: "단단할 때 깎아 아삭함을 즐기는 과일 접시",
+      i: ["단단한 감 1개", "호두 한 줌", "꿀 약간"],
+      s: ["감은 껍질을 깎고 꼭지를 도려낸다.", "8등분으로 썬다.", "접시에 감을 담고 호두를 곁들인다.", "꿀을 아주 살짝 두른다."] },
+    "귤 꿀차": { d: "껍질 안쪽 흰 부분까지 함께 먹는 따뜻한 차",
+      i: ["귤 3개", "꿀 2큰술", "뜨거운 물 2컵"],
+      s: ["귤은 껍질을 벗기되 안쪽 흰 부분은 최대한 남긴다.", "알맹이를 먹기 좋게 쪼갠다.", "컵에 귤과 꿀을 담는다.", "뜨거운 물을 붓고 2~3분 우려 마신다."] },
+    "배추겉절이": { d: "아삭한 식감이 살아 있는 즉석 김치",
+      i: ["배추 속잎 300g", "굵은 소금 1큰술", "고춧가루 2큰술", "멸치액젓 1큰술", "다진 마늘 1작은술", "설탕 1/2작은술", "대파·깨 약간"],
+      s: ["배추를 한입 크기로 썰어 소금을 뿌려 20분 절인다.", "찬물에 헹궈 물기를 뺀다.", "고춧가루, 액젓, 마늘, 설탕, 대파를 섞어 양념을 만든다.", "배추에 양념을 넣고 살살 무쳐 깨를 뿌린다."] }
+  };
 
-  var dishes = [
-    {
-      name: "무화과 샐러드",
-      desc: "무화과와 잎채소를 올리브유로 가볍게 버무린 것",
-      scores: { 제철: 4, 영양: 5, 간편: 5, 재료: 3, 선호: 3 },
-      recipe: {
-        ingredients: ["무화과 4개", "루꼴라(또는 잎채소) 한 줌", "생모짜렐라 50g", "올리브유 1큰술", "발사믹 식초 1작은술", "소금 약간", "호두 약간(선택)"],
-        steps: [
-          "무화과는 흐르는 물에 씻어 꼭지를 떼고 세로로 4등분한다.",
-          "잎채소는 찬물에 담가 아삭하게 살린 뒤 물기를 털어낸다.",
-          "접시에 잎채소를 깔고 무화과와 모짜렐라를 보기 좋게 얹는다.",
-          "올리브유, 발사믹 식초, 소금을 섞어 드레싱을 만든다.",
-          "드레싱을 골고루 뿌리고 호두를 부수어 올려 마무리한다."
-        ]
-      }
-    },
-    {
-      name: "전어구이",
-      desc: "가시째 구워 소금만 곁들이는 가을 대표 별미",
-      scores: { 제철: 5, 영양: 4, 간편: 5, 재료: 3, 선호: 5 },
-      recipe: {
-        ingredients: ["손질된 전어 4마리", "굵은 소금 약간", "무 약간(곁들임용)"],
-        steps: [
-          "전어는 비늘을 긁어내고 배를 갈라 내장을 제거한 뒤 흐르는 물에 헹군다.",
-          "속까지 잘 익도록 몸통에 어슷하게 칼집을 3~4번 넣는다.",
-          "키친타월로 물기를 완전히 제거한다.",
-          "달군 석쇠나 팬에 전어를 올려 앞뒤로 노릇하게 굽는다.",
-          "다 구워지면 굵은 소금을 살짝 뿌리고 무채와 함께 낸다."
-        ]
-      }
-    },
-    {
-      name: "밤밥",
-      desc: "삶은 밤을 얹어 지은 밥, 반찬 없이도 든든함",
-      scores: { 제철: 5, 영양: 4, 간편: 4, 재료: 5, 선호: 4 },
-      recipe: {
-        ingredients: ["쌀 2컵", "밤 15알", "밥물 2컵", "소금 약간"],
-        steps: [
-          "쌀은 씻어 30분 정도 물에 불린다.",
-          "밤은 껍질째 물에 30분 담가 두었다가 겉껍질과 속껍질을 벗긴다.",
-          "불린 쌀과 밤을 밥솥에 담고 밥물을 맞춘다.",
-          "소금을 아주 약간 넣고 골고루 섞는다.",
-          "평소대로 취사한 뒤, 다 되면 밥과 밤을 고루 섞어 그릇에 담는다."
-        ]
-      }
-    },
-    {
-      name: "토란국",
-      desc: "쌀뜨물에 삶아 아린맛을 뺀 토란으로 끓인 국",
-      scores: { 제철: 5, 영양: 4, 간편: 2, 재료: 3, 선호: 3 },
-      recipe: {
-        ingredients: ["토란 300g", "쌀뜨물(또는 물) 1L", "다진 소고기 100g", "국간장 1큰술", "다진 마늘 1작은술", "대파 약간", "참기름 약간"],
-        steps: [
-          "토란은 껍질을 벗긴 뒤 쌀뜨물에 담가 아린 맛을 뺀다.",
-          "냄비에 참기름을 두르고 다진 소고기를 볶는다.",
-          "고기가 익으면 토란을 넣고 함께 볶는다.",
-          "물을 붓고 끓어오르면 중불로 줄여 토란이 무를 때까지 끓인다.",
-          "국간장과 다진 마늘로 간을 하고, 대파를 넣어 한소끔 더 끓인다."
-        ]
-      }
-    },
-    {
-      name: "대하구이",
-      desc: "굵은 소금 위에 얹어 뚜껑 덮고 찌듯 굽는 통새우",
-      scores: { 제철: 5, 영양: 4, 간편: 4, 재료: 3, 선호: 5 },
-      recipe: {
-        ingredients: ["대하(왕새우) 8마리", "굵은 소금 2컵"],
-        steps: [
-          "대하는 수염과 뿔을 다듬고 등쪽 내장을 이쑤시개로 빼낸다.",
-          "팬이나 냄비 바닥에 굵은 소금을 깔고 달군다.",
-          "소금이 달궈지면 대하를 가지런히 올린다.",
-          "뚜껑을 덮고 중약불에서 5~7분간 찌듯이 굽는다.",
-          "껍질이 붉게 익고 속살이 탱글해지면 불을 끄고 뜨거울 때 낸다."
-        ]
-      }
-    },
-    {
-      name: "배숙",
-      desc: "배와 생강, 통후추를 넣고 끓인 달콤한 차",
-      scores: { 제철: 4, 영양: 3, 간편: 2, 재료: 4, 선호: 2 },
-      recipe: {
-        ingredients: ["배 1개", "생강 1쪽", "통후추 5알", "꿀(또는 설탕) 2큰술", "물 500ml"],
-        steps: [
-          "배는 껍질을 벗기고 6~8등분한 뒤 씨 부분을 제거한다.",
-          "생강은 얇게 편으로 썬다.",
-          "냄비에 물과 생강, 통후추를 넣고 끓인다.",
-          "끓기 시작하면 배를 넣고 반투명해질 때까지 중약불로 익힌다.",
-          "불을 끄고 꿀을 넣어 단맛을 맞춘 뒤 따뜻하거나 차게 낸다."
-        ]
-      }
-    }
+  /* ── 오늘의 한 끼 (밥 · 국 · 반찬) ──────── */
+  /* months: [시작, 끝] — 그 달 제철 재료로 짠 상. 12개월이 모두 하나 이상 걸리도록 구성 */
+
+  var meals = [
+    { months: [2, 4],   rice: "흰쌀밥",    soup: "냉이된장국",   sides: ["달래간장무침"],
+      why: "밥과 국이 담백하니 향이 센 달래 하나만 곁들여도 입맛이 삽니다. 나물 위주라 속이 가볍습니다." },
+    { months: [3, 4],   rice: "흰쌀밥",    soup: "도다리쑥국",   sides: ["주꾸미 데침"],
+      why: "흰살생선 국에 쫄깃한 주꾸미를 더해 단백질을 채우고, 밥은 담백하게 두어 두 가지 해산물 맛이 또렷합니다." },
+    { months: [4, 5],   rice: "완두콩밥",  soup: "죽순된장국",   sides: ["두릅 데침"],
+      why: "콩의 단맛, 죽순의 구수함, 두릅의 쌉싸름함이 한 상에서 균형을 이룹니다. 모두 식이섬유가 많습니다." },
+    { months: [6, 7],   rice: "흰쌀밥",    soup: "감자맑은국",   sides: ["열무물김치"],
+      why: "더운 때라 국은 맑게, 반찬은 시원한 물김치로 맞췄습니다. 입이 개운하고 속이 편합니다." },
+    { months: [7, 8],   rice: "옥수수밥",  soup: "오이냉국",     sides: ["장어구이"],
+      why: "기름진 장어를 새콤한 냉국이 잡아 주고, 옥수수밥의 단맛이 받쳐 줍니다. 무더위에 기력을 채우는 한 상입니다." },
+    { months: [8, 9],   rice: "옥수수밥",  soup: "오이냉국",     sides: ["전어구이"],
+      why: "전어는 가을에 기름이 오르는 생선이라 소금구이만으로 충분합니다. 새콤한 냉국이 입을 정리해 줍니다." },
+    { months: [9, 10],  rice: "밤밥",      soup: "토란국",       sides: ["전어구이"],
+      why: "밤과 토란은 둘 다 부드럽고 달큰해서, 반찬은 짭짤하고 고소한 생선구이로 맛의 균형을 잡았습니다." },
+    { months: [10, 11], rice: "고구마밥",  soup: "소고기뭇국",   sides: ["대하구이"],
+      why: "탄수화물은 고구마밥으로, 단백질은 새우와 소고기로 채우고 무국으로 속을 풀어 줍니다." },
+    { months: [11, 12], rice: "고구마밥",  soup: "배추된장국",   sides: ["방어구이"],
+      why: "기름진 방어를 구수한 된장국이 받쳐 줍니다. 등 푸른 생선이라 오메가3가 풍부합니다." },
+    { months: [12, 2],  rice: "굴밥",      soup: "시금치된장국", sides: ["방어구이"],
+      why: "굴의 아연, 시금치의 철분, 방어의 오메가3를 한 상에 모았습니다. 겨울 면역을 챙기기에 좋은 조합입니다." },
+    { months: [3, 4],   rice: "흰쌀밥",    soup: "도다리쑥국",   sides: ["미나리무침"],
+      why: "쑥국의 은은한 향에 새콤한 미나리무침이 더해져 입안이 산뜻합니다. 두 가지 모두 봄 향이 살아 있습니다." },
+    { months: [5, 5],   rice: "흰쌀밥",    soup: "감자맑은국",   sides: ["미나리무침"],
+      why: "맑은 감자국으로 속을 편하게 하고, 새콤한 미나리무침으로 늦봄 입맛을 깨웁니다." },
+    { months: [5, 5],   rice: "완두콩밥",  soup: "감자맑은국",   sides: ["두릅 데침"],
+      why: "콩과 감자의 부드러운 단맛에 두릅의 쌉싸름함을 더해 맛에 변화를 줍니다. 곡물, 채소, 나물이 고루 들어갑니다." },
+    { months: [6, 6],   rice: "완두콩밥",  soup: "감자맑은국",   sides: ["장어구이"],
+      why: "초여름에 오르는 장어로 단백질과 기력을 채우고, 밥과 국은 담백한 제철 재료로 받쳐 줍니다." },
+    { months: [6, 8],   rice: "흰쌀밥",    soup: "오이냉국",     sides: ["열무물김치"],
+      why: "입맛 없는 한여름에 새콤한 냉국과 시원한 물김치로 차린 가벼운 한 상입니다." },
+    { months: [9, 10],  rice: "밤밥",      soup: "토란국",       sides: ["대하구이"],
+      why: "달큰한 밥과 부드러운 국에 탱글한 새우구이를 더해 단백질을 챙겼습니다." },
+    { months: [11, 12], rice: "흰쌀밥",    soup: "소고기뭇국",   sides: ["배추겉절이"],
+      why: "맑고 따뜻한 국에 아삭한 겉절이를 곁들여, 기름기 없이 개운하게 먹는 김장철 한 상입니다." },
+    { months: [12, 2],  rice: "흰쌀밥",    soup: "소고기뭇국",   sides: ["방어구이", "시금치나물"],
+      why: "구이와 나물, 맑은 국으로 기름과 채소의 균형을 맞춘 겨울 한 상입니다." },
+    { months: [12, 2],  rice: "굴밥",      soup: "소고기뭇국",   sides: ["시금치나물"],
+      why: "굴밥 한 그릇에 시원한 무국과 나물만 곁들여도 든든한, 담백한 겨울 밥상입니다." }
   ];
 
-  function total(scores) {
-    return Object.keys(scores).reduce(function (sum, key) { return sum + scores[key]; }, 0);
+
+  /* ── 오대영양소 (한 끼 권장량 대비 추정) ───── */
+  /* [탄수화물 g, 단백질 g, 지방 g, 비타민 점수, 무기질 점수] — 1인분 기준 어림값.
+     비타민·무기질은 재료가 얼마나 풍부한지 0~3점으로 매긴 추정치 */
+
+  var NUTRI = {
+    "흰쌀밥": [65, 5, 1, 0, .5],       "완두콩밥": [68, 8, 1, 1, 1],       "옥수수밥": [70, 6, 1.5, 1, 1],
+    "밤밥": [75, 6, 1.5, 1, 1],        "고구마밥": [75, 5, 1, 1.5, 1],     "굴밥": [66, 10, 2, .5, 2.5],
+    "냉이된장국": [5, 5, 3, 2, 1.5],   "도다리쑥국": [5, 12, 3, 1.5, 1.5], "죽순된장국": [6, 4, 2.5, .5, 1],
+    "감자맑은국": [12, 2, .5, 1, .5],  "오이냉국": [4, 1, 1, 1, .5],       "소고기뭇국": [6, 12, 5, 1, 1.5],
+    "토란국": [12, 8, 4, .5, 1.5],     "배추된장국": [6, 4, 2.5, 1.5, 1],  "시금치된장국": [6, 5, 2.5, 2.5, 2],
+    "달래간장무침": [4, 1, 2, 1.5, .5], "주꾸미 데침": [5, 14, 1.5, .5, 2], "두릅 데침": [5, 3, .5, 1.5, 1],
+    "열무물김치": [4, 2, .5, 2, 1],    "장어구이": [8, 22, 16, 1.5, 1],    "전어구이": [1, 18, 10, .5, 1.5],
+    "대하구이": [1, 17, 1.5, .5, 1.5], "방어구이": [1, 22, 14, 1, 1.5],    "미나리무침": [6, 1, 2, 1.5, 1],
+    "시금치나물": [4, 3, 3, 2.5, 2],   "배추겉절이": [6, 2, .5, 2, 1]
+  };
+
+  /* 성인 하루 섭취 기준(2,000kcal 안팎)의 1/3 = 한 끼 기준량 */
+  var NUTRI_REF = [100, 20, 18, 5, 5];
+  var NUTRI_LABEL = ["탄수화물", "단백질", "지방", "비타민", "무기질"];
+  var NUTRI_MAX = 150;
+
+  function mealNutri(m) {
+    var sum = [0, 0, 0, 0, 0];
+    [m.rice, m.soup].concat(m.sides).forEach(function (n) {
+      var v = NUTRI[n] || [0, 0, 0, 0, 0];
+      for (var i = 0; i < 5; i++) sum[i] += v[i];
+    });
+    return sum.map(function (x, i) { return Math.round(x / NUTRI_REF[i] * 100); });
   }
 
-  var btn = document.getElementById("score-btn");
-  var list = document.getElementById("results");
+  function nutriScore(pcts) {
+    var total = 0;
+    pcts.forEach(function (p) { total += Math.min(p, 100); });
+    return Math.round(total / 5);
+  }
 
-  btn.addEventListener("click", function () {
-    var ranked = dishes
-      .map(function (d) { return { name: d.name, desc: d.desc, scores: d.scores, recipe: d.recipe, total: total(d.scores) }; })
-      .sort(function (a, b) {
-        var diff = Math.abs(MAX_SCORE - a.total) - Math.abs(MAX_SCORE - b.total);
-        return diff !== 0 ? diff : b.total - a.total;
-      })
-      .slice(0, 3);
+  function nutriVerdict(score) {
+    return score >= 85 ? "알찬 한 끼" : score >= 70 ? "균형 좋은 한 끼" : "가벼운 한 끼";
+  }
 
-    list.innerHTML = ranked.map(function (d, i) {
-      var breakdown = Object.keys(d.scores).map(function (key) {
-        return "<li><span>" + key + "</span><b>" + d.scores[key] + "</b></li>";
-      }).join("");
+  function pentagon(pcts) {
+    var cx = 150, cy = 106, R = 66;
+    function pt(i, pct) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / 5;
+      var r = R * Math.min(pct, NUTRI_MAX * 1.5) / NUTRI_MAX;
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    }
+    function poly(level) {
+      var out = [];
+      for (var i = 0; i < 5; i++) out.push(pt(i, level).map(function (n) { return n.toFixed(1); }).join(","));
+      return out.join(" ");
+    }
+    var axes = "", labels = "";
+    for (var i = 0; i < 5; i++) {
+      var e = pt(i, NUTRI_MAX), l = pt(i, NUTRI_MAX * (R + 18) / R);
+      axes += '<line class="pg-axis" x1="' + cx + '" y1="' + cy + '" x2="' + e[0].toFixed(1) + '" y2="' + e[1].toFixed(1) + '"/>';
+      var anchor = l[0] < cx - 6 ? "end" : l[0] > cx + 6 ? "start" : "middle";
+      labels += '<text class="pg-label" x="' + l[0].toFixed(1) + '" y="' + l[1].toFixed(1) + '" text-anchor="' + anchor + '">' +
+        NUTRI_LABEL[i] + '<tspan class="pg-pct" x="' + l[0].toFixed(1) + '" dy="1.2em">' + pcts[i] + '%</tspan></text>';
+    }
+    return (
+      '<svg class="pentagon" viewBox="0 0 300 208" role="img" aria-label="오대영양소 오각형 그래프: ' +
+        NUTRI_LABEL.map(function (n, i) { return n + " " + pcts[i] + "%"; }).join(", ") + '">' +
+        '<polygon class="pg-ring" points="' + poly(50) + '"/>' +
+        '<polygon class="pg-ring" points="' + poly(NUTRI_MAX) + '"/>' +
+        axes +
+        '<polygon class="pg-ref" points="' + poly(100) + '"/>' +
+        '<polygon class="pg-fill" points="' + poly1(pcts) + '"/>' +
+        labels +
+      '</svg>'
+    );
+    function poly1(values) {
+      return values.map(function (v, i) { return pt(i, Math.min(v, NUTRI_MAX)).map(function (n) { return n.toFixed(1); }).join(","); }).join(" ");
+    }
+  }
 
-      var ingredientsMarkup = d.recipe.ingredients.map(function (item) {
-        return "<li>" + item + "</li>";
-      }).join("");
+  function mealsForMonth(month) {
+    return meals.filter(function (m) {
+      var a = m.months[0], b = m.months[1];
+      return a <= b ? month >= a && month <= b : month >= a || month <= b;
+    });
+  }
 
-      var steps = d.recipe.steps.map(function (step) {
-        return "<li>" + step + "</li>";
-      }).join("");
+  function dayOfYear(d) {
+    return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+  }
 
+  var mealBox = document.getElementById("meal");
+  var thumbBox = document.getElementById("thumbs");
+  var selected = -1;
+
+  function dishMarkup(kind, name) {
+    var r = RECIPES[name];
+    return (
+      '<details class="dish">' +
+        '<summary>' +
+          '<span class="meal-kind">' + kind + '</span>' +
+          '<span class="meal-name">' + name + '</span>' +
+          '<span class="meal-desc">' + r.d + '</span>' +
+          '<span class="toggle" aria-hidden="true"></span>' +
+        '</summary>' +
+        recipeMarkup(name, true) +
+      '</details>'
+    );
+  }
+
+  function renderThumbs() {
+    var today = new Date();
+    var options = mealsForMonth(today.getMonth() + 1);
+    var pick = options.length ? dayOfYear(today) % options.length : -1;
+
+    thumbBox.innerHTML = options.map(function (m, i) {
+      var sides = m.sides.join(" · ");
+      var pcts = mealNutri(m);
+      var score = nutriScore(pcts);
       return (
-        '<li class="result">' +
-          '<span class="result-rank">' + (i + 1) + "</span>" +
-          '<div class="result-body">' +
-            '<h3 class="result-name">' + d.name + "</h3>" +
-            '<p class="result-desc">' + d.desc + "</p>" +
-            '<ul class="result-scores">' + breakdown + "</ul>" +
-            '<div class="result-recipe">' +
-              '<p class="recipe-label">재료</p>' +
-              '<ul class="recipe-ingredients">' + ingredientsMarkup + "</ul>" +
-              '<p class="recipe-label">만드는 법</p>' +
-              '<ol class="recipe-steps">' + steps + "</ol>" +
-            "</div>" +
-          "</div>" +
-          '<span class="result-score"><b>' + d.total + "</b><small>/25</small></span>" +
-        "</li>"
+        '<button type="button" class="thumb' + (i === selected ? " is-on" : "") + '" data-i="' + i + '" aria-pressed="' + (i === selected) + '">' +
+          '<span class="thumb-tag">' + (i === pick ? "오늘의 추천" : "&nbsp;") + '</span>' +
+          pentagon(pcts) +
+          '<span class="thumb-score"><b>' + score + '</b><small>점</small><em>' + nutriVerdict(score) + '</em></span>' +
+          '<span class="thumb-row"><b>밥</b>' + m.rice + '</span>' +
+          '<span class="thumb-row"><b>국</b>' + m.soup + '</span>' +
+          '<span class="thumb-row"><b>반찬</b>' + sides + '</span>' +
+        '</button>'
       );
     }).join("");
-
-    list.hidden = false;
-    btn.hidden = true;
-  });
-
-  function renderScoreSection(month) {
-    var active = FALL_MONTHS.indexOf(month) !== -1;
-    document.getElementById("score-active").hidden = !active;
-    document.getElementById("score-fallback").hidden = active;
+    thumbBox.hidden = !options.length;
+    return options;
   }
+
+  function renderMeal(options) {
+    if (selected < 0 || !options[selected]) { mealBox.hidden = true; mealBox.innerHTML = ""; return; }
+    var m = options[selected];
+    mealBox.innerHTML =
+      '<div class="meal-list">' +
+        dishMarkup("밥", m.rice) + dishMarkup("국", m.soup) +
+        m.sides.map(function (n) { return dishMarkup("반찬", n); }).join("") +
+      '</div>' +
+      '<p class="meal-why"><b>왜 이 조합인가</b>' + m.why + '</p>';
+    mealBox.hidden = false;
+  }
+
+  thumbBox.addEventListener("click", function (e) {
+    var el = e.target;
+    while (el && el !== thumbBox && !(el.getAttribute && el.getAttribute("data-i") !== null)) el = el.parentNode;
+    if (!el || el === thumbBox) return;
+    var i = parseInt(el.getAttribute("data-i"), 10);
+    selected = (selected === i) ? -1 : i;
+    renderMeal(renderThumbs());
+  });
 
   /* ── 초기 렌더 + 매시 재확인(달이 바뀌면 다시 그림) ── */
 
   var lastRenderedMonth = null;
 
   function refresh() {
-    var month = renderSeasonal();
-    if (month !== lastRenderedMonth) {
-      renderScoreSection(month);
-      lastRenderedMonth = month;
-    }
+    var month = currentMonth();
+    if (month === lastRenderedMonth) return;
+    renderSeasonal();
+    selected = -1;
+    renderMeal(renderThumbs());
+    lastRenderedMonth = month;
   }
 
   updateStamp();
