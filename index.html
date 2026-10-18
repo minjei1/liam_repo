@@ -36,27 +36,20 @@
       <p class="section-note" id="month-note">9월</p>
     </div>
 
-    <a class="next" href="ingredients.html">
-      <span class="next-title">지금 제철인 재료 보러 가기</span>
-      <span class="next-arrow"><span class="next-go">이동</span> <span aria-hidden="true">→</span></span>
-    </a>
+    <p class="fold-note">재료를 누르면 요리법이 펼쳐지고, 다시 누르면 접힙니다.</p>
+    <ul class="seasonal" id="seasonal-list"></ul>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>앞으로 만들 페이지</h2>
-      <p class="section-note">계획</p>
+      <h2>오늘의 한 끼</h2>
+      <p class="section-note">밥 · 국 · 반찬</p>
     </div>
 
-    <ul class="plan">
-      <li>
-        <span class="no">01</span>
-        <div>
-          <h3>재료로 찾는 요리 <span class="tag">준비 중</span></h3>
-          <p>냉장고에 있는 재료를 고르면 그 재료가 제철일 때 어울리는 요리를 보여 줍니다.</p>
-        </div>
-      </li>
-    </ul>
+    <a class="next" href="ingredients.html">
+      <span class="next-title">오늘의 한 끼 보러 가기</span>
+      <span class="next-arrow"><span class="next-go">이동</span> <span aria-hidden="true">→</span></span>
+    </a>
   </section>
 
   <footer>
@@ -66,6 +59,7 @@
 
 </div>
 
+<script src="shared.js"></script>
 <script>
 (function () {
   function pad2(n) { return n < 10 ? "0" + n : "" + n; }
@@ -116,16 +110,43 @@
     return { cur: all[cur], next: all[cur + 1] };
   }
 
+  var lastRenderedMonth = null;
+
+  function renderSeasonal(month) {
+    var active = ingredients.filter(function (item) { return isInSeason(item, month); });
+    document.getElementById("month-note").textContent = month + "월 · " + active.length + "가지";
+    document.getElementById("seasonal-list").innerHTML = active.map(function (item) {
+      return (
+        '<li><details class="ing">' +
+          '<summary>' +
+            '<span class="ingredient-icon">' + (ICONS[item.cat] || ICONS.veg) + "</span>" +
+            '<span class="ingredient">' + item.name + "</span>" +
+            '<span class="when">' + item.period + "</span>" +
+            '<span class="memo">' + item.memo + "</span>" +
+            '<span class="toggle" aria-hidden="true"></span>' +
+          "</summary>" +
+          recipeMarkup(item.dish) +
+        "</details></li>"
+      );
+    }).join("");
+  }
+
   function update() {
     var now = Date.now();
     var d = new Date();
     var year = d.getFullYear();
-    document.getElementById("stamp").textContent = year + " · " + pad2(d.getMonth() + 1);
-    document.getElementById("month-note").textContent = (d.getMonth() + 1) + "월";
+    var month = d.getMonth() + 1;
+    document.getElementById("stamp").textContent = year + " · " + pad2(month);
 
     var t = currentTerm(now, year);
     document.getElementById("solar-term").textContent =
       sameDay(t.cur.ms, now) ? "오늘은 " + t.cur.name : t.cur.name + " 지나 " + t.next.name + " 앞";
+
+    /* 달이 바뀔 때만 다시 그린다 (펼쳐 둔 요리법이 접히지 않게) */
+    if (month !== lastRenderedMonth) {
+      renderSeasonal(month);
+      lastRenderedMonth = month;
+    }
   }
 
   update();
