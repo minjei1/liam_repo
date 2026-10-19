@@ -741,6 +741,16 @@ details[open] > summary .toggle::after { transform: rotate(0deg); }
   font-size: .9375rem;
 }
 
+.fridge-warn {
+  margin: .5rem 0 0;
+  padding-left: .75rem;
+  border-left: 3px solid var(--ink);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.fridge-warn:empty { display: none; }
+
 .fridge-form input:disabled,
 .fridge-form button:disabled { opacity: .55; cursor: not-allowed; }
 .fridge-form button:disabled:hover { background: var(--blue-wash); color: var(--blue); }

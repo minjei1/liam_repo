@@ -45,6 +45,7 @@
       </form>
       <ul class="chips" id="chips"></ul>
       <p class="fridge-hint" id="fridge-hint" aria-live="polite"></p>
+      <p class="fridge-warn" id="fridge-warn" aria-live="polite"></p>
     </div>
   </section>
 
@@ -69,6 +70,7 @@
 </div>
 
 <script src="shared.js"></script>
+<script src="dishes.js"></script>
 <script>
 (function () {
   /* ── 현재 날짜(달) 계속 확인 ────────────── */
@@ -269,85 +271,15 @@
   };
   /* 입력한 재료로 한 끼를 채우기 위한 추가 요리 — 요리법은 틀(템플릿)에 재료 이름을 넣어 만든다 */
   /* [요리 이름, 재료, 역할, 틀] */
-  var EXTRA_DISHES = [
-    ["감자밥", "감자", "rice", "밥"], ["감자볶음", "감자", "side", "볶음"], ["감자조림", "감자", "side", "조림"], ["감자전", "감자", "side", "전"],
-    ["고구마조림", "고구마", "side", "조림"], ["고구마전", "고구마", "side", "전"], ["군고구마", "고구마", "dessert", "굽기"],
-    ["토란밥", "토란", "rice", "밥"], ["토란조림", "토란", "side", "조림"],
-    ["밤조림", "밤", "side", "조림"], ["군밤", "밤", "dessert", "굽기"],
-    ["죽순밥", "죽순", "rice", "밥"], ["죽순볶음", "죽순", "side", "볶음"],
-    ["냉이밥", "냉이", "rice", "밥"], ["냉이무침", "냉이", "side", "무침"],
-    ["달래된장국", "달래", "soup", "된장국"], ["달래전", "달래", "side", "전"],
-    ["두릅전", "두릅", "side", "전"],
-    ["미나리된장국", "미나리", "soup", "된장국"], ["미나리전", "미나리", "side", "전"],
-    ["열무된장국", "열무", "soup", "된장국"], ["열무볶음", "열무", "side", "볶음"],
-    ["배추전", "배추", "side", "전"], ["배추볶음", "배추", "side", "볶음"],
-    ["굴국", "굴", "soup", "맑은탕"], ["굴전", "굴", "side", "전"],
-    ["주꾸미볶음", "주꾸미", "side", "볶음"],
-    ["도다리구이", "도다리", "side", "생선구이"],
-    ["방어무조림", "방어", "side", "생선조림"], ["방어매운탕", "방어", "soup", "맑은탕"],
-    ["장어탕", "장어", "soup", "맑은탕"],
-    ["전어조림", "전어", "side", "생선조림"],
-    ["대하탕", "대하", "soup", "맑은탕"],
-    ["완두콩조림", "완두콩", "side", "조림"],
-    ["옥수수전", "옥수수", "side", "전"], ["옥수수밥", "옥수수", "rice", "밥"],
-    ["무밥", "무", "rice", "밥"], ["무생채", "무", "side", "무침"],
-    ["오이무침", "오이", "side", "무침"],
-    ["소고기장조림", "소고기", "side", "조림"],
-    ["시금치전", "시금치", "side", "전"],
-    ["딸기 샐러드", "딸기", "side", "샐러드"], ["참외 샐러드", "참외", "side", "샐러드"], ["복숭아 샐러드", "복숭아", "side", "샐러드"],
-    ["감 샐러드", "감", "side", "샐러드"], ["배 샐러드", "배", "side", "샐러드"], ["귤 샐러드", "귤", "side", "샐러드"],
-    ["무화과 요거트", "무화과", "dessert", "요거트"]
-  ];
-
-  var TEMPLATES = {
-    "밥":   { n: [68, 6, 1.5, 1, 1],  d: function (n) { return n + " 향이 배어드는 밥"; },
-              i: function (n) { return ["쌀 2컵", n + " 150g", "물 2컵", "소금 한 꼬집"]; },
-              s: function (n) { return ["쌀을 씻어 30분 불린다.", "[" + n + "] 먹기 좋은 크기로 손질한다.", "밥솥에 쌀, 손질한 재료, 물, 소금을 넣고 취사한다.", "다 되면 고루 섞어 그릇에 담는다."]; } },
-    "볶음": { n: [8, 2, 6, 1.5, 1],   d: function (n) { return "기름에 가볍게 볶아 낸 " + n + " 반찬"; },
-              i: function (n) { return [n + " 200g", "식용유 1큰술", "다진 마늘 1/2작은술", "소금 약간", "통깨 약간"]; },
-              s: function (n) { return ["[" + n + "] 손질해 먹기 좋은 크기로 썬다.", "달군 팬에 기름과 다진 마늘을 넣고 향을 낸다.", "재료를 넣고 중불에서 부드러워질 때까지 볶는다. 단단한 재료는 뚜껑을 덮고 익힌다.", "소금으로 간하고 통깨를 뿌린다."]; } },
-    "조림": { n: [12, 2, 3, 1, 1],    d: function (n) { return "간장 양념에 졸인 " + n + " 반찬"; },
-              i: function (n) { return [n + " 200g", "간장 2큰술", "설탕 1큰술", "물 1컵", "참기름 1작은술", "통깨 약간"]; },
-              s: function (n) { return ["[" + n + "] 손질해 먹기 좋은 크기로 썬다.", "냄비에 간장, 설탕, 물을 넣고 끓인다.", "재료를 넣고 중약불에서 양념이 배도록 졸인다.", "국물이 자작해지면 참기름과 통깨를 넣는다."]; } },
-    "전":   { n: [18, 4, 8, 1, 1],    d: function (n) { return "노릇하게 부쳐 낸 " + n + "전"; },
-              i: function (n) { return [n + " 150g", "밀가루 3큰술", "소금 약간", "물 약간", "식용유 적당량", "초간장(곁들임)"]; },
-              s: function (n) { return ["[" + n + "] 손질해 먹기 좋게 썰거나 채 썬다.", "밀가루, 소금, 물을 섞어 묽은 반죽을 만들고 재료를 버무린다.", "달군 팬에 기름을 두르고 얇게 펴서 앞뒤로 노릇하게 부친다.", "초간장을 곁들여 낸다."]; } },
-    "된장국": { n: [6, 5, 2.5, 1.5, 1.5], d: function (n) { return "구수한 된장국에 " + n + " 향을 더한 국"; },
-              i: function (n) { return [n + " 100g", "쌀뜨물 3컵", "된장 1.5큰술", "다진 마늘 1/2작은술", "대파 약간"]; },
-              s: function (n) { return ["[" + n + "] 손질해 먹기 좋은 크기로 썬다.", "쌀뜨물에 된장을 풀어 끓인다.", "끓으면 재료를 넣고 5~7분 끓인다.", "다진 마늘과 대파를 넣고 한소끔 더 끓인다."]; } },
-    "맑은탕": { n: [6, 14, 5, 1, 1.5], d: function (n) { return n + "의 시원한 맛을 살린 맑은 국"; },
-              i: function (n) { return [n + " 150g", "무 100g", "물 4컵", "국간장 1큰술", "다진 마늘 1작은술", "대파 약간", "소금 약간"]; },
-              s: function (n) { return ["[" + n + "] 깨끗이 손질한다.", "무를 나박 썰어 물에 넣고 끓인다.", "무가 익으면 재료를 넣고 5~8분 끓이며 거품을 걷는다.", "국간장, 다진 마늘, 소금으로 간하고 대파를 넣는다."]; } },
-    "생선구이": { n: [1, 20, 8, 1, 1.5], d: function (n) { return "소금만 뿌려 구운 " + n; },
-              i: function (n) { return [n + " 1마리(또는 2토막)", "소금 약간", "식용유 약간"]; },
-              s: function (n) { return ["[" + n + "] 손질해 물기를 닦고 소금을 살짝 뿌려 10분 둔다.", "달군 팬에 기름을 얇게 두른다.", "중불에서 앞뒤로 5분씩 노릇하게 굽는다.", "접시에 담는다."]; } },
-    "생선조림": { n: [6, 20, 10, 1, 1.5], d: function (n) { return "무와 함께 매콤하게 졸인 " + n; },
-              i: function (n) { return [n + " 2토막", "무 150g", "간장 2큰술", "고춧가루 1큰술", "설탕 1작은술", "다진 마늘 1작은술", "물 1.5컵", "대파 약간"]; },
-              s: function (n) { return ["무를 도톰하게 썰어 냄비 바닥에 깐다.", "물, 간장, 고춧가루, 설탕, 다진 마늘을 섞어 붓고 끓인다.", "[" + n + "] 손질해 무 위에 얹고 중불에서 15분 졸이며 국물을 끼얹는다.", "대파를 넣고 한소끔 더 졸인다."]; } },
-    "무침": { n: [5, 2, 2.5, 1.5, 1], d: function (n) { return "새콤달콤하게 무친 " + n + " 반찬"; },
-              i: function (n) { return [n + " 200g", "소금 약간", "식초 1큰술", "설탕 1/2큰술", "고춧가루 1작은술", "다진 마늘 1/2작은술", "참기름 1작은술", "통깨 약간"]; },
-              s: function (n) { return ["[" + n + "] 손질해 먹기 좋게 채 썰거나 다듬는다. 필요하면 끓는 물에 살짝 데쳐 물기를 짠다.", "식초, 설탕, 소금, 고춧가루, 다진 마늘을 섞어 양념을 만든다.", "재료에 양념을 넣고 가볍게 무친다.", "참기름과 통깨를 넣어 마무리한다."]; } },
-    "샐러드": { n: [8, 2, 5, 1.5, 1], d: function (n) { return n + "을 잎채소와 곁들인 가벼운 샐러드"; },
-              i: function (n) { return [n + " 적당량", "잎채소 한 줌", "올리브유 1큰술", "식초 1작은술", "소금 약간"]; },
-              s: function (n) { return ["잎채소를 찬물에 담가 아삭하게 살린 뒤 물기를 털어낸다.", "[" + n + "] 씻어 먹기 좋은 크기로 썬다.", "올리브유, 식초, 소금을 섞어 드레싱을 만든다.", "접시에 잎채소와 재료를 담고 드레싱을 뿌린다."]; } },
-    "요거트": { n: [15, 4, 2, 1.5, .5], d: function (n) { return n + "을 올린 플레인 요거트"; },
-              i: function (n) { return [n + " 적당량", "플레인 요거트 1컵", "꿀 1작은술"]; },
-              s: function (n) { return ["[" + n + "] 씻어 먹기 좋은 크기로 썬다.", "그릇에 요거트를 담는다.", "재료를 올리고 꿀을 두른다."]; } },
-    "굽기": { n: [20, 2, 0.5, 1.5, 1], d: function (n) { return "통째로 구워 단맛을 끌어낸 " + n; },
-              i: function (n) { return [n + " 적당량"]; },
-              s: function (n) { return ["[" + n + "] 깨끗이 씻어 물기를 닦는다. 밤은 칼집을 낸다.", "에어프라이어 180도에서 25~40분, 오븐은 200도에서 40분 안팎 굽는다.", "젓가락이 푹 들어갈 만큼 익으면 꺼낸다.", "한김 식힌 뒤 껍질째 또는 벗겨 먹는다."]; } }
+  var ALIAS = {
+    "밥": "쌀", "쌀밥": "쌀", "흰쌀": "쌀", "백미": "쌀", "현미": "쌀",
+    "쇠고기": "소고기", "한우": "소고기",
+    "삼겹살": "돼지고기", "목살": "돼지고기", "앞다리살": "돼지고기", "돼지": "돼지고기", "돼지고기": "돼지고기",
+    "닭": "닭고기", "닭가슴살": "닭고기", "닭다리": "닭고기", "닭다리살": "닭고기",
+    "계란": "달걀", "무우": "무", "왕새우": "대하", "스피니치": "시금치", "호박": "애호박",
+    "표고": "버섯", "표고버섯": "버섯", "느타리": "버섯", "새송이": "버섯", "양송이": "버섯", "팽이": "버섯", "팽이버섯": "버섯", "느타리버섯": "버섯",
+    "오뎅": "어묵", "파": "대파", "쪽파": "대파", "방울토마토": "토마토", "토마토": "토마토", "단호박": "단호박"
   };
-
-  EXTRA_DISHES.forEach(function (row) {
-    var name = row[0], ing = row[1], role = row[2], t = TEMPLATES[row[3]];
-    if (RECIPES[name]) return;
-    RECIPES[name] = { d: t.d(ing), i: t.i(ing), s: t.s(ing) };
-    NUTRI[name] = t.n;
-    DISH_ING[name] = [ing];
-    if (ROLE_DISHES[role].indexOf(name) === -1) ROLE_DISHES[role].push(name);
-  });
-
-  var ALIAS = { "밥": "쌀", "쌀밥": "쌀", "흰쌀": "쌀", "백미": "쌀", "현미": "쌀", "쇠고기": "소고기", "한우": "소고기", "무우": "무", "왕새우": "대하", "스피니치": "시금치" };
 
   var STAPLES = ["쌀"];
   var MAX_FRIDGE = 3;
@@ -365,14 +297,51 @@
     return false;
   }
 
+  /* ── 실제로 널리 먹는 요리(dishes.js)를 불러온다 ───────────────────── */
+
+  var PROTEIN = { "전어구이": "fish", "방어구이": "fish", "장어구이": "fish", "도다리쑥국": "fish", "대하구이": "seafood", "주꾸미 데침": "seafood",
+                  "굴밥": "seafood", "소고기뭇국": "meat", "계란말이": "egg" };
+
+  REAL_DISHES.forEach(function (r) {
+    if (RECIPES[r.name]) return;
+    RECIPES[r.name] = { d: r.d, i: r.i, s: r.s };
+    NUTRI[r.name] = r.nut;
+    DISH_ING[r.name] = r.ing;
+    if (r.protein) PROTEIN[r.name] = r.protein;
+    ROLE_DISHES[r.role].push(r.name);
+  });
+
+  function proteinOf(name) { return PROTEIN[name] || ""; }
+
   function hasAnyMeal(entry) {
+    if (STAPLES.indexOf(entry) !== -1) return true;
     var found = false;
     Object.keys(ROLE_DISHES).forEach(function (role) {
       ROLE_DISHES[role].forEach(function (n) {
         if ((DISH_ING[n] || []).some(function (k) { return matchesIngredient(entry, k); })) found = true;
       });
     });
-    return found || STAPLES.indexOf(entry) !== -1;
+    return found;
+  }
+
+  /* ── 인스턴트·패스트푸드: 요리에 쓰지 않고 건강하지 않다고 알린다 ─────────────
+     식약처의 식품 분류(레토르트·냉동·통조림 식품)와 일반적인 패스트푸드 메뉴를 바탕으로 모았다 */
+  var JUNK_FOODS = [
+    /* 면·즉석 식사 */ "라면", "컵라면", "사발면", "컵누들", "짜파게티", "불닭", "너구리", "신라면", "컵밥", "즉석밥", "즉석국", "즉석카레", "즉석짜장", "즉석죽", "즉석식품", "햇반", "인스턴트", "레토르트", "간편식", "분말스프", "컵스프", "냉동식품", "냉동만두", "냉동피자", "냉동볶음밥", "냉동돈까스", "냉동돈가스", "냉동너겟", "냉동핫도그", "커피믹스", "믹스커피",
+    /* 가공육·통조림 */ "스팸", "런천미트", "통조림햄", "소시지", "소세지", "비엔나", "베이컨", "햄", "핫바", "너겟", "너깃",
+    /* 패스트푸드 */ "햄버거", "치즈버거", "빅맥", "와퍼", "치킨", "후라이드", "프라이드치킨", "양념치킨", "닭강정", "피자", "감자튀김", "프렌치프라이", "핫도그", "도넛", "도너츠"
+  ];
+  /* 짧은 이름은 정확히 같을 때만, 나머지는 포함되면 해당 */
+  var JUNK_EXACT = ["햄"];
+
+  function isJunkFood(entry) {
+    for (var i = 0; i < JUNK_FOODS.length; i++) {
+      var k = JUNK_FOODS[i];
+      if (entry === k) return true;
+      if (JUNK_EXACT.indexOf(k) !== -1) continue;
+      if (entry.indexOf(k) !== -1) return true;
+    }
+    return false;
   }
 
   function saveFridge() {
@@ -383,7 +352,7 @@
     try {
       var saved = JSON.parse(localStorage.getItem("fridge") || "[]");
       if (Object.prototype.toString.call(saved) === "[object Array]") {
-        fridge = saved.filter(function (x) { return typeof x === "string" && x; }).slice(0, MAX_FRIDGE);
+        fridge = saved.filter(function (x) { return typeof x === "string" && x && !isJunkFood(x); }).slice(0, MAX_FRIDGE);
       }
     } catch (e) {}
   }
@@ -413,16 +382,18 @@
 
   function addFridge(raw) {
     var next = fridge.slice();
-    var dropped = false;
+    var dropped = false, junk = [];
     String(raw).split(/[,，、\s]+/).forEach(function (part) {
       var t = normalizeIngredient(part);
-      if (!t || next.indexOf(t) !== -1) return;
+      if (!t) return;
+      if (isJunkFood(t)) { if (junk.indexOf(t) === -1) junk.push(t); return; }
+      if (next.indexOf(t) !== -1) return;
       if (next.length < MAX_FRIDGE) next.push(t); else dropped = true;
     });
     setFridge(next);
     if (dropped) document.getElementById("fridge-hint").textContent = "3개까지만 담았어요. 나머지는 담지 않았어요.";
+    document.getElementById("fridge-warn").textContent = junk.length ? junk.join(", ") + ": 패스트 푸드와 인스턴트는 건강하지 않습니다." : "";
   }
-
 
   var shown = [];
 
@@ -461,15 +432,16 @@
   }
 
   var SIDE_CAP = 3;
-  var RESULT_COUNT = 5;
+  var RESULT_COUNT = 3;
 
   function seasonalCountOf(m, month) {
     return mealDishes(m).filter(function (n) { return isSeasonalDish(n, month); }).length;
   }
 
   /* 이달 제철 상에 냉장고 재료를 쓰는 요리를 더한다.
-     제철 요리가 상의 중심으로 남도록: 반찬·후식은 더하고, 밥·국은 제철이 아닌 칸만 바꾸고,
-     제철 반찬을 바꿀 때는 제철 요리가 2개 이상 남을 때만 한다. seed가 다르면 다른 요리를 고른다 */
+     제철 요리가 상의 중심으로 남도록: 반찬·후식은 더하고, 밥·국·제철 반찬을 바꿀 때는
+     제철 요리가 2개 이상 남을 때만 한다. 제철 재료가 함께 든 요리를 먼저 고르고,
+     같은 단백질(생선·고기·해산물·달걀) 요리는 한 상에 겹치지 않게 한다. seed가 다르면 다른 요리를 고른다 */
   function enhanceMeal(meal, core, seed, month, fullCore) {
     var m = { rice: meal.rice, soup: meal.soup, sides: meal.sides.slice(), dessert: meal.dessert || null, why: meal.why };
     var added = [];
@@ -479,9 +451,30 @@
       if (!uncovered.length) break;
 
       var adds = [], swaps = [];
+
+      function sameProteinAt(name, ignore) {
+        var p = proteinOf(name);
+        if (!p) return -1;
+        var dishes = mealDishes(m);
+        for (var d = 0; d < dishes.length; d++) if (dishes[d] !== ignore && proteinOf(dishes[d]) === p) return d;
+        return -1;
+      }
+
       ROLE_DISHES.side.forEach(function (name) {
         var gain = dishCovers(name, uncovered).length;
         if (!gain || m.sides.indexOf(name) !== -1) return;
+
+        /* 같은 단백질(생선·고기·해산물·달걀) 요리가 이미 있으면, 바꿔 넣을 수 있는 제철 반찬일 때만 그 자리에 넣는다 */
+        if (sameProteinAt(name) !== -1) {
+          for (var c = 0; c < m.sides.length; c++) {
+            if (proteinOf(m.sides[c]) !== proteinOf(name)) continue;
+            if (!isSeasonalDish(m.sides[c], month) || dishCovers(m.sides[c], core).length) continue;
+            var swapTest = { rice: m.rice, soup: m.soup, sides: m.sides.filter(function (_, k) { return k !== c; }), dessert: m.dessert };
+            if (seasonalCountOf(swapTest, month) >= 2) swaps.push({ name: name, role: "side", gain: gain, at: c });
+          }
+          return;
+        }
+
         if (m.sides.length < SIDE_CAP) { adds.push({ name: name, role: "side", gain: gain }); return; }
         for (var i = 0; i < m.sides.length; i++) {
           if (!isSeasonalDish(m.sides[i], month) || dishCovers(m.sides[i], core).length) continue;
@@ -495,10 +488,14 @@
       });
       ["rice", "soup"].forEach(function (role) {
         var current = role === "rice" ? m.rice : m.soup;
-        if (isSeasonalDish(current, month)) return;
+        /* 제철 밥·국은 상에 제철 요리가 2개 이상 남을 때만 바꾼다 */
+        if (isSeasonalDish(current, month)) {
+          var swapped = { rice: role === "rice" ? null : m.rice, soup: role === "soup" ? null : m.soup, sides: m.sides, dessert: m.dessert };
+          if (seasonalCountOf(swapped, month) < 2) return;
+        }
         ROLE_DISHES[role].forEach(function (name) {
           var gain = dishCovers(name, uncovered).length;
-          if (gain && name !== current) swaps.push({ name: name, role: role, gain: gain });
+          if (gain && name !== current && sameProteinAt(name, current) === -1) swaps.push({ name: name, role: role, gain: gain });
         });
       });
 
@@ -506,6 +503,8 @@
       if (!pool.length) break;
       var best = Math.max.apply(null, pool.map(function (f) { return f.gain; }));
       var top = pool.filter(function (f) { return f.gain === best; });
+      var harmonious = top.filter(function (f) { return isSeasonalDish(f.name, month); });
+      if (harmonious.length) top = harmonious;
       var pick = top[(seed + round) % top.length];
 
       if (pick.role === "side") { if (pick.at === undefined) m.sides.push(pick.name); else m.sides[pick.at] = pick.name; }
@@ -586,7 +585,10 @@
       cands.forEach(function (c, idx) {
         var score = c.matched.length * 100 - c.dishCount * 2 - (baseUse[c.base] || 0) * 15 + (c.primary ? 10 : 0);
         c.matched.forEach(function (e) { score += 20 / (1 + usage[e]); });
-        mealDishes(c.m).forEach(function (n) { if (!usedDishes[n]) score += 3; });
+        mealDishes(c.m).forEach(function (n) {
+          if (!usedDishes[n]) score += 3;
+          if (dishCovers(n, core).length && isSeasonalDish(n, month)) score += 12;
+        });
         if (score > bestScore) { bestScore = score; bestIdx = idx; }
       });
       var chosen = cands.splice(bestIdx, 1)[0];
@@ -612,8 +614,8 @@
       note.hidden = true;
     } else if (used) {
       note.innerHTML = "이달 제철 메뉴에 냉장고 속 재료(<b>" + fridge.join(", ") + "</b>)를 골고루 곁들인 한 끼 " + list.length + "가지를 추천해요.";
-      var unmatched = fridge.filter(function (x) { return !hasAnyMeal(x); });
-      if (unmatched.length) note.innerHTML += "<small>아직 맞는 요리가 없는 재료: " + unmatched.join(", ") + "</small>";
+      var noDish = fridge.filter(function (x) { return !hasAnyMeal(x); });
+      if (noDish.length) note.innerHTML += "<small>" + noDish.join(", ") + "(으)로 만드는 대표 요리는 아직 담지 못했어요.</small>";
       note.hidden = false;
     } else {
       note.innerHTML = "냉장고 속 재료(<b>" + fridge.join(", ") + "</b>)에 맞는 요리가 아직 없어서 이달 제철 메뉴만 보여 드려요.";
