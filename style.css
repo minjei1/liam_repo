@@ -510,13 +510,13 @@ details[open] > summary .toggle::after { transform: rotate(0deg); }
   color: var(--blue);
 }
 
-.pentagon { display: block; width: 100%; height: auto; margin: 0; }
+.pentagon { display: block; width: 100%; height: auto; margin: 0 0 .6rem; padding-bottom: .4rem; border-bottom: 1px dashed var(--line-strong); }
 .pg-ring { fill: none; stroke: var(--line); stroke-width: 1; }
 .pg-axis { stroke: var(--line); stroke-width: 1; }
 .pg-ref  { fill: none; stroke: var(--blue-soft); stroke-width: 1.2; stroke-dasharray: 3 3; }
 .pg-fill { fill: var(--blue-wash); stroke: var(--blue); stroke-width: 1.8; stroke-linejoin: round; }
-.pg-label { font-family: var(--sans); font-size: 19px; font-weight: 500; fill: var(--ink-soft); }
-.pg-pct   { font-family: var(--mono); font-size: 19px; font-weight: 600; fill: var(--blue); }
+.pg-label { font-family: var(--sans); font-size: 24px; font-weight: 500; fill: var(--ink-soft); }
+.pg-pct   { font-family: var(--mono); font-size: 23px; font-weight: 600; fill: var(--blue); }
 
 .thumb-score {
   display: flex;

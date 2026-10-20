@@ -56,7 +56,7 @@
     </div>
 
     <p class="today-note">이달 제철 재료로 짠 한 상입니다. 밥 하나, 국 하나, 반찬으로 맛과 영양이 겹치지 않게 맞췄고, 요리법까지 함께 적었습니다. 마음에 드는 상을 골라 보세요.</p>
-    <p class="nutri-note">오각형은 탄수화물·단백질·지방·비타민·무기질을 성인 하루 섭취 기준의 3분의 1(한 끼 기준량)과 견준 것입니다. 점선이 기준량 100%이고, 점수는 다섯 영양소가 기준량을 얼마나 채웠는지의 평균입니다. 재료로 어림한 추정치이니 참고용으로 봐 주세요.</p>
+    <p class="nutri-note">오각형은 탄수화물·단백질·지방·비타민·무기질을 성인 하루 섭취 기준의 3분의 1(한 끼 기준량)과 견준 것입니다. 점선이 기준량 100%입니다. 재료로 어림한 추정치이니 참고용으로 봐 주세요.</p>
     <p class="fridge-result" id="fridge-result" hidden></p>
     <div class="thumbs" id="thumbs"></div>
     <div class="meal" id="meal" hidden aria-live="polite"></div>
@@ -179,7 +179,7 @@
   }
 
   function pentagon(pcts) {
-    var cx = 150, cy = 106, R = 66;
+    var cx = 150, cy = 108, R = 58;
     function pt(i, pct) {
       var a = -Math.PI / 2 + i * 2 * Math.PI / 5;
       var r = R * Math.min(pct, NUTRI_MAX * 1.5) / NUTRI_MAX;
@@ -192,14 +192,14 @@
     }
     var axes = "", labels = "";
     for (var i = 0; i < 5; i++) {
-      var e = pt(i, NUTRI_MAX), l = pt(i, NUTRI_MAX * (R + 18) / R);
+      var e = pt(i, NUTRI_MAX), l = pt(i, NUTRI_MAX * (R + 20) / R);
       axes += '<line class="pg-axis" x1="' + cx + '" y1="' + cy + '" x2="' + e[0].toFixed(1) + '" y2="' + e[1].toFixed(1) + '"/>';
       var anchor = l[0] < cx - 6 ? "end" : l[0] > cx + 6 ? "start" : "middle";
       labels += '<text class="pg-label" x="' + l[0].toFixed(1) + '" y="' + l[1].toFixed(1) + '" text-anchor="' + anchor + '">' +
         NUTRI_LABEL[i] + '<tspan class="pg-pct" x="' + l[0].toFixed(1) + '" dy="1.2em">' + pcts[i] + '%</tspan></text>';
     }
     return (
-      '<svg class="pentagon" viewBox="0 0 300 208" role="img" aria-label="오대영양소 오각형 그래프: ' +
+      '<svg class="pentagon" viewBox="0 0 300 212" role="img" aria-label="오대영양소 오각형 그래프: ' +
         NUTRI_LABEL.map(function (n, i) { return n + " " + pcts[i] + "%"; }).join(", ") + '">' +
         '<polygon class="pg-ring" points="' + poly(50) + '"/>' +
         '<polygon class="pg-ring" points="' + poly(NUTRI_MAX) + '"/>' +
@@ -627,15 +627,9 @@
       var m = c.m;
       var sides = m.sides.join(" · ");
       var pcts = mealNutri(m);
-      var score = nutriScore(pcts);
-      var tag = (c.matched && c.matched.length)
-        ? '<span class="thumb-tag is-fridge">냉장고 · ' + c.matched.join(" · ") + '</span>'
-        : '<span class="thumb-tag">' + (i === pick ? "오늘의 추천" : "&nbsp;") + '</span>';
       return (
         '<button type="button" class="thumb' + (i === selected ? " is-on" : "") + '" data-i="' + i + '" aria-pressed="' + (i === selected) + '">' +
-          tag +
           pentagon(pcts) +
-          '<span class="thumb-score"><b>' + score + '</b><small>점</small><em>' + nutriVerdict(score) + '</em></span>' +
           '<span class="thumb-row"><b>밥</b>' + m.rice + '</span>' +
           (m.soup ? '<span class="thumb-row"><b>국</b>' + m.soup + '</span>' : "") +
           (m.sides.length ? '<span class="thumb-row"><b>반찬</b>' + sides + '</span>' : "") +
